@@ -1,0 +1,9 @@
+description: |
+  Service Unavailable - The service is unavailable.
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "503"
+      message: "Service Unavailable."

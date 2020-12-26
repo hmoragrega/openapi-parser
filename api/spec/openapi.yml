@@ -1,0 +1,54 @@
+openapi: 3.0.3
+
+info:
+  title: School List API
+  description: |
+    An unexistent API to query schools.
+  contact:
+    name:  Hilari Moragrega
+    url:   https://github.com/hmoragrega
+    email: hilari@hilarimoragrega.com
+  version: 1.0.0
+
+servers:
+  - url:         https://hilarimoragrega.com/openapi-parser
+    description: Production server
+
+paths:
+  # inline paths are not supported, only local references are.
+  /v1/schools:
+    $ref: "resources/schools.yml"
+  /v1/schools/{uuid}:
+    $ref: "resources/schools-{uuid}.yml"
+
+components:
+
+  # inline schemas are not supported, only local references are.
+  schemas:
+    School:
+      $ref: "schemas/school.yml"
+    Address:
+      $ref: "schemas/address.yml"
+    Error:
+      $ref: "schemas/error.yml"
+
+  # only inline schemas are supported for parameters.
+  parameters:
+    Next:
+      in: query
+      name: next
+      required: false
+      description: The cursor position for pagination.
+      schema:
+        type: integer
+    PerPage:
+      in: query
+      name: per_page
+      required: false
+      description: |
+        The amount of items to return in the current list (Default: 50. Min: 25, Max: 100).
+      schema:
+        type: integer
+        minimum: 25
+        maximum: 100
+        default: 50

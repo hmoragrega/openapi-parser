@@ -1,0 +1,36 @@
+# PATH: /v1/schools/{uuid}
+get:
+  summary: Get School Method
+  description: |
+    Retrieves a school resource using its ID.
+  tags:
+    - Schools
+  operationId: Get-School-By-UUID
+  parameters:
+    - in: path
+      name: uuid
+      required: true
+      description: School unique identifier.
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: |
+        **School** resource.
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/school.yml'
+    '401':
+      $ref: '../responses/errors/401.yml'
+    '403':
+      $ref: '../responses/errors/403.yml'
+    '404':
+      $ref: '../responses/errors/404.yml'
+    '405':
+      $ref: '../responses/errors/405.yml'
+    '500':
+      $ref: '../responses/errors/500.yml'
+    '503':
+      $ref: '../responses/errors/503.yml'

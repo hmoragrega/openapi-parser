@@ -1,0 +1,9 @@
+description: |
+  Unprocessable Entity - The payload syntax is valid but there is a logic error.
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "422"
+      message: "Unprocessable Entity."

@@ -1,0 +1,9 @@
+description: |
+  Internal Server Error - There has been an unexpected error processing the request.
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "500"
+      message: "Internal server error."

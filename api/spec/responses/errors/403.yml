@@ -1,0 +1,9 @@
+description: |
+  Forbidden - The caller does not have access to this resource.
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "403"
+      message: "Forbidden."

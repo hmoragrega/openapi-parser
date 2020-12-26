@@ -1,0 +1,9 @@
+description: |
+  Conflict - the resource already exists.
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "409"
+      message: "Conflict."

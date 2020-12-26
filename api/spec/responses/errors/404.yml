@@ -1,0 +1,9 @@
+description: |
+  Not Found - The resource does not exists.
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "404"
+      message: "Not found."

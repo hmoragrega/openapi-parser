@@ -1,0 +1,9 @@
+description: |
+  Unauthorized - Invalid authorization credentials.
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "401"
+      message: "Unauthorized."

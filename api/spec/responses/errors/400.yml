@@ -1,0 +1,9 @@
+description: |
+  Bad request - The request cannot be processed
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "400"
+      message: "Bad request."

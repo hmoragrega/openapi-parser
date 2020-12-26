@@ -1,0 +1,83 @@
+# PATH: /v1/schools
+get:
+  summary: List schools
+  description: |
+    Lists the schools.
+  tags:
+    - Schools
+  operationId: List-Schools
+  parameters:
+    - $ref: '../openapi.yml#/components/parameters/Next'
+    - $ref: '../openapi.yml#/components/parameters/PerPage'
+  responses:
+    '200':
+      description: |
+        List of **School** resources.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../schemas/school.yml'
+    '401':
+      $ref: '../responses/errors/401.yml'
+    '403':
+      $ref: '../responses/errors/403.yml'
+    '404':
+      $ref: '../responses/errors/404.yml'
+    '405':
+      $ref: '../responses/errors/405.yml'
+    '500':
+      $ref: '../responses/errors/500.yml'
+    '503':
+      $ref: '../responses/errors/503.yml'
+
+post:
+  summary: Create school
+  description: |
+    Create a new schools.
+  tags:
+    - Schools
+  operationId: Create-School
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/school.yml'
+  responses:
+    '200':
+      description: |
+        List of **School** resources.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../schemas/school.yml'
+    '400':
+      $ref: '../responses/errors/400.yml'
+    '401':
+      $ref: '../responses/errors/401.yml'
+    '403':
+      $ref: '../responses/errors/403.yml'
+    '404':
+      $ref: '../responses/errors/404.yml'
+    '405':
+      $ref: '../responses/errors/405.yml'
+    '422':
+      $ref: '../responses/errors/422.yml'
+    '500':
+      $ref: '../responses/errors/500.yml'
+    '503':
+      $ref: '../responses/errors/503.yml'

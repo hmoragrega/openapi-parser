@@ -1,0 +1,31 @@
+# components/schemas/Address
+type: object
+description: Physical address
+required:
+  - street
+  - city
+  - country
+properties:
+  street:
+    type: string
+    description: Name of the street.
+    example: Krylatskaya Ulitsa
+  number:
+    type: integer
+    description: Street number.
+    example: 22
+  area-code:
+    type: string
+    description: Code of the area.
+    example: FRS12-188
+  city:
+    type: string
+    description: Name of the city.
+    example: Moscow
+  country:
+    type: string
+    description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
+    pattern: '^[A-Z]{3}$'
+    example: RUS
+    minimum: 3
+    maximum: 3

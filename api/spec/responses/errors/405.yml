@@ -1,0 +1,9 @@
+description: |
+  Method Not Allowed - The method is not allowed for this resource.
+content:
+  application/json:
+    schema:
+      $ref: "../../schemas/error.yml"
+    example:
+      code: "405"
+      message: "Method Not Allowed."
