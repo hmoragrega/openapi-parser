@@ -32,7 +32,7 @@ properties:
         - Maximum length: 100.
         - Accepts alphanumeric characters, dashes, dots and spaces.
     pattern: '^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$'
-    example: "The International School of Moscow"
+    example: Moscow's International Business School - "Center"
   contact:
     type: object
     description: School's contact information.

@@ -297,7 +297,7 @@ paths:
                                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                         pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                         example: |
-                                                                            "The International School of Moscow"
+                                                                            Moscow's International Business School - "Center"
                                                                     open:
                                                                         file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                         key: open
@@ -344,7 +344,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                       pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                       example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                     - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                       key: contact
                                                                       type: object
@@ -787,7 +787,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                     example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                 open:
                                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                     key: open
@@ -834,7 +834,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                   example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                   key: contact
                                                                   type: object
@@ -1529,7 +1529,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                     example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                 open:
                                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                     key: open
@@ -1576,7 +1576,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                   example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                   key: contact
                                                                   type: object
@@ -2019,7 +2019,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -2066,7 +2066,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -2751,7 +2751,7 @@ paths:
                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                 example: |
-                                                    "The International School of Moscow"
+                                                    Moscow's International Business School - "Center"
                                             open:
                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                 key: open
@@ -2798,7 +2798,7 @@ paths:
                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                               example: |
-                                                "The International School of Moscow"
+                                                Moscow's International Business School - "Center"
                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                               key: contact
                                               type: object
@@ -3255,7 +3255,7 @@ paths:
                                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                         pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                         example: |
-                                                                            "The International School of Moscow"
+                                                                            Moscow's International Business School - "Center"
                                                                     open:
                                                                         file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                         key: open
@@ -3302,7 +3302,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                       pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                       example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                     - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                       key: contact
                                                                       type: object
@@ -3745,7 +3745,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                     example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                 open:
                                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                     key: open
@@ -3792,7 +3792,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                   example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                   key: contact
                                                                   type: object
@@ -4567,7 +4567,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                     example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                 open:
                                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                     key: open
@@ -4614,7 +4614,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                   example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                   key: contact
                                                                   type: object
@@ -5057,7 +5057,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -5104,7 +5104,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -5897,7 +5897,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                     example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                 open:
                                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                     key: open
@@ -5944,7 +5944,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                   example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                   key: contact
                                                                   type: object
@@ -6387,7 +6387,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -6434,7 +6434,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -7129,7 +7129,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -7176,7 +7176,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -7619,7 +7619,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                             example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                         open:
                                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                             key: open
@@ -7666,7 +7666,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                           example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                           key: contact
                                                           type: object
@@ -8350,7 +8350,7 @@ paths:
                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                             example: |
-                                                "The International School of Moscow"
+                                                Moscow's International Business School - "Center"
                                         open:
                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                             key: open
@@ -8397,7 +8397,7 @@ paths:
                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                           example: |
-                                            "The International School of Moscow"
+                                            Moscow's International Business School - "Center"
                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                           key: contact
                                           type: object
@@ -8854,7 +8854,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                     example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                 open:
                                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                     key: open
@@ -8901,7 +8901,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                   example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                   key: contact
                                                                   type: object
@@ -9344,7 +9344,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -9391,7 +9391,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -10166,7 +10166,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -10213,7 +10213,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -10656,7 +10656,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                             example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                         open:
                                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                             key: open
@@ -10703,7 +10703,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                           example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                           key: contact
                                                           type: object
@@ -11482,7 +11482,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                         pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                         example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                     open:
                                                         file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                         key: open
@@ -11529,7 +11529,7 @@ paths:
                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                       pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                       example: |
-                                                        "The International School of Moscow"
+                                                        Moscow's International Business School - "Center"
                                                     - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                       key: contact
                                                       type: object
@@ -12214,7 +12214,7 @@ paths:
                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                     example: |
-                                                        "The International School of Moscow"
+                                                        Moscow's International Business School - "Center"
                                                 open:
                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                     key: open
@@ -12261,7 +12261,7 @@ paths:
                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                   example: |
-                                                    "The International School of Moscow"
+                                                    Moscow's International Business School - "Center"
                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                   key: contact
                                                   type: object
@@ -12957,7 +12957,7 @@ paths:
                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                     example: |
-                                                        "The International School of Moscow"
+                                                        Moscow's International Business School - "Center"
                                                 open:
                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                     key: open
@@ -13004,7 +13004,7 @@ paths:
                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                   example: |
-                                                    "The International School of Moscow"
+                                                    Moscow's International Business School - "Center"
                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                   key: contact
                                                   type: object
@@ -13689,7 +13689,7 @@ paths:
                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                 example: |
-                                                    "The International School of Moscow"
+                                                    Moscow's International Business School - "Center"
                                             open:
                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                 key: open
@@ -13736,7 +13736,7 @@ paths:
                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                               example: |
-                                                "The International School of Moscow"
+                                                Moscow's International Business School - "Center"
                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                               key: contact
                                               type: object
@@ -14456,7 +14456,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                     example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                 open:
                                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                     key: open
@@ -14503,7 +14503,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                   example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                   key: contact
                                                                   type: object
@@ -14946,7 +14946,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -14993,7 +14993,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -15688,7 +15688,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -15735,7 +15735,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -16178,7 +16178,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                             example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                         open:
                                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                             key: open
@@ -16225,7 +16225,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                           example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                           key: contact
                                                           type: object
@@ -16910,7 +16910,7 @@ paths:
                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                             example: |
-                                                "The International School of Moscow"
+                                                Moscow's International Business School - "Center"
                                         open:
                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                             key: open
@@ -16957,7 +16957,7 @@ paths:
                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                           example: |
-                                            "The International School of Moscow"
+                                            Moscow's International Business School - "Center"
                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                           key: contact
                                           type: object
@@ -17414,7 +17414,7 @@ paths:
                                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                     example: |
-                                                                        "The International School of Moscow"
+                                                                        Moscow's International Business School - "Center"
                                                                 open:
                                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                     key: open
@@ -17461,7 +17461,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                   example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                   key: contact
                                                                   type: object
@@ -17904,7 +17904,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -17951,7 +17951,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -18726,7 +18726,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -18773,7 +18773,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -19216,7 +19216,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                             example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                         open:
                                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                             key: open
@@ -19263,7 +19263,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                           example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                           key: contact
                                                           type: object
@@ -20056,7 +20056,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -20103,7 +20103,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -20546,7 +20546,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                             example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                         open:
                                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                             key: open
@@ -20593,7 +20593,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                           example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                           key: contact
                                                           type: object
@@ -21288,7 +21288,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                             example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                         open:
                                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                             key: open
@@ -21335,7 +21335,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                           example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                           key: contact
                                                           type: object
@@ -21778,7 +21778,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                         pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                         example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                     open:
                                                         file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                         key: open
@@ -21825,7 +21825,7 @@ paths:
                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                       pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                       example: |
-                                                        "The International School of Moscow"
+                                                        Moscow's International Business School - "Center"
                                                     - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                       key: contact
                                                       type: object
@@ -22509,7 +22509,7 @@ paths:
                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                         pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                         example: |
-                                            "The International School of Moscow"
+                                            Moscow's International Business School - "Center"
                                     open:
                                         file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                         key: open
@@ -22556,7 +22556,7 @@ paths:
                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                       pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                       example: |
-                                        "The International School of Moscow"
+                                        Moscow's International Business School - "Center"
                                     - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                       key: contact
                                       type: object
@@ -23013,7 +23013,7 @@ paths:
                                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                                 example: |
-                                                                    "The International School of Moscow"
+                                                                    Moscow's International Business School - "Center"
                                                             open:
                                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                                 key: open
@@ -23060,7 +23060,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                               example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                               key: contact
                                                               type: object
@@ -23503,7 +23503,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                             example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                         open:
                                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                             key: open
@@ -23550,7 +23550,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                           example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                           key: contact
                                                           type: object
@@ -24325,7 +24325,7 @@ paths:
                                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                             example: |
-                                                                "The International School of Moscow"
+                                                                Moscow's International Business School - "Center"
                                                         open:
                                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                             key: open
@@ -24372,7 +24372,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                           example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                           key: contact
                                                           type: object
@@ -24815,7 +24815,7 @@ paths:
                                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                                         pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                         example: |
-                                                            "The International School of Moscow"
+                                                            Moscow's International Business School - "Center"
                                                     open:
                                                         file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                         key: open
@@ -24862,7 +24862,7 @@ paths:
                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                       pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                       example: |
-                                                        "The International School of Moscow"
+                                                        Moscow's International Business School - "Center"
                                                     - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                       key: contact
                                                       type: object
@@ -25640,7 +25640,7 @@ paths:
                                                           - Accepts alphanumeric characters, dashes, dots and spaces.
                                                     pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                     example: |
-                                                        "The International School of Moscow"
+                                                        Moscow's International Business School - "Center"
                                                 open:
                                                     file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                     key: open
@@ -25687,7 +25687,7 @@ paths:
                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                   pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                   example: |
-                                                    "The International School of Moscow"
+                                                    Moscow's International Business School - "Center"
                                                 - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                   key: contact
                                                   type: object
@@ -26372,7 +26372,7 @@ paths:
                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                 example: |
-                                                    "The International School of Moscow"
+                                                    Moscow's International Business School - "Center"
                                             open:
                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                 key: open
@@ -26419,7 +26419,7 @@ paths:
                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                               example: |
-                                                "The International School of Moscow"
+                                                Moscow's International Business School - "Center"
                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                               key: contact
                                               type: object
@@ -27115,7 +27115,7 @@ paths:
                                                       - Accepts alphanumeric characters, dashes, dots and spaces.
                                                 pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                                 example: |
-                                                    "The International School of Moscow"
+                                                    Moscow's International Business School - "Center"
                                             open:
                                                 file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                                 key: open
@@ -27162,7 +27162,7 @@ paths:
                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                               pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                               example: |
-                                                "The International School of Moscow"
+                                                Moscow's International Business School - "Center"
                                             - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                               key: contact
                                               type: object
@@ -27847,7 +27847,7 @@ paths:
                                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                             example: |
-                                                "The International School of Moscow"
+                                                Moscow's International Business School - "Center"
                                         open:
                                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                             key: open
@@ -27894,7 +27894,7 @@ paths:
                                               - Accepts alphanumeric characters, dashes, dots and spaces.
                                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                                           example: |
-                                            "The International School of Moscow"
+                                            Moscow's International Business School - "Center"
                                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                                           key: contact
                                           type: object
@@ -28683,7 +28683,7 @@ components:
                                   - Accepts alphanumeric characters, dashes, dots and spaces.
                             pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                             example: |
-                                "The International School of Moscow"
+                                Moscow's International Business School - "Center"
                         open:
                             file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                             key: open
@@ -28730,7 +28730,7 @@ components:
                               - Accepts alphanumeric characters, dashes, dots and spaces.
                           pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                           example: |
-                            "The International School of Moscow"
+                            Moscow's International Business School - "Center"
                         - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                           key: contact
                           type: object
@@ -29169,7 +29169,7 @@ components:
                               - Accepts alphanumeric characters, dashes, dots and spaces.
                         pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                         example: |
-                            "The International School of Moscow"
+                            Moscow's International Business School - "Center"
                     open:
                         file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                         key: open
@@ -29216,7 +29216,7 @@ components:
                           - Accepts alphanumeric characters, dashes, dots and spaces.
                       pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
                       example: |
-                        "The International School of Moscow"
+                        Moscow's International Business School - "Center"
                     - file: /Users/hilari/code/hmoragrega/openapi-parser/api/spec/schemas/school.yml
                       key: contact
                       type: object

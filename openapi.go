@@ -1,6 +1,8 @@
 package openapiparser
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -128,6 +130,104 @@ type Schema struct {
 
 func (s *Schema) isRef() bool {
 	return s.Ref != ""
+}
+
+func (s *Schema) JSON() (string, error) {
+	var b strings.Builder
+	err := jsonSchema(s, &b, false)
+	if err != nil {
+		return "", err
+	}
+	return b.String(), nil
+}
+
+func (s *Schema) JSONIndent(indent string) (string, error) {
+	var buf bytes.Buffer
+	src, err := s.JSON()
+	if err != nil {
+		return "", err
+	}
+	if err := json.Indent(&buf, []byte(src), "", indent); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
+func jsonSchema(s *Schema, b *strings.Builder, withName bool) error {
+	clean := func(s string) string {
+		return strings.Trim(s, "\n ")
+	}
+	key := clean(s.Key)
+	ex := clean(s.Example)
+	if withName && key != "" {
+		b.WriteByte('"')
+		b.WriteString(key)
+		b.WriteString(`":`)
+	}
+	switch s.Type {
+	case "object":
+		b.WriteByte('{')
+		for i, p := range s.Properties.Slice {
+			if i > 0 {
+				b.WriteByte(',')
+			}
+			if err := jsonSchema(p, b, true); err != nil {
+				return err
+			}
+		}
+		b.WriteByte('}')
+	case "array":
+		b.WriteByte('[')
+		if err := jsonSchema(s.Items, b, false); err != nil {
+			return err
+		}
+		b.WriteByte(']')
+	case "string":
+		if ex != "" {
+			b.WriteString(strconv.Quote(ex))
+			return nil
+		}
+		if len(s.Enum) > 0 {
+			b.WriteString(strconv.Quote(clean(s.Enum[0])))
+			return nil
+		}
+		b.WriteByte('"')
+		switch s.Format {
+		case "uuid":
+			b.WriteString("e017d029-a459-4cfc-bf35-dd774ddf50e7")
+		case "date-time":
+			b.WriteString("2015-12-13T10:05:48+01:00")
+		case "date":
+			b.WriteString("2015-12-13")
+		case "time":
+			b.WriteString("10:05:48+01:00")
+		case "email":
+			b.WriteString("email@example.com")
+		default:
+			b.WriteString("string")
+		}
+		b.WriteByte('"')
+	case "integer", "number":
+		if ex != "" {
+			b.WriteString(ex)
+			return nil
+		}
+		switch s.Format {
+		case "double", "float":
+			b.WriteString("100.00")
+		default:
+			b.WriteString("100")
+		}
+	case "boolean":
+		if ex != "" {
+			b.WriteString(ex)
+			return nil
+		}
+		b.WriteString("true")
+	default:
+		panic("unexpected type building schema JSON " + s.Type + " at " + s.File)
+	}
+	return nil
 }
 
 type Response struct {
