@@ -92,7 +92,6 @@ type EnumX struct {
 type Components struct {
 	Schemas    *Schemas    `yaml:"schemas,omitempty"`
 	Parameters *Parameters `yaml:"parameters,omitempty"`
-	EnumsX     []*EnumX    `yaml:"enums,omitempty"`
 }
 
 type Schema struct {
