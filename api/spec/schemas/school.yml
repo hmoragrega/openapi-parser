@@ -33,28 +33,39 @@ properties:
         - Accepts alphanumeric characters, dashes, dots and spaces.
     pattern: '^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$'
     example: Moscow's International Business School - "Center"
-  contact:
-    type: object
-    description: School's contact information.
-    required:
-      - email
-    properties:
-      email:
-        description: Contact email.
-        type: string
-        format: email
-      name:
-        description: Contact person's name.
-        type: string
-        example: John doe
-      phone:
-        type: array
-        description: Phone numbers.
-        minItems: 1
-        maxItems: 5
-        items:
+  contacts:
+    type: array
+    description: Contact persons list.
+    minItems: 1
+    items:
+      type: object
+      description: Person contact information.
+      required:
+        - email
+      properties:
+        email:
+          description: Contact email.
           type: string
-          example: (555)-1234566789
+          format: email
+        position:
+          description: Contact person's position.
+          type: string
+          example: Main office secretary.
+        name:
+          description: Contact person's name.
+          type: string
+          example: John doe
+        phone:
+          type: array
+          description: Phone numbers.
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+            example: (555)-1234566789
+  main_office:
+    #$ref: '../schemas/address.yml'
+    $ref: '../openapi.yml#/components/schemas/Address'
   campus:
     type: array
     description: Campus locations.
@@ -63,7 +74,7 @@ properties:
       $ref: '../schemas/address.yml'
   foundation_year:
     type: integer
-    description: Year of fundation.
+    description: Year of foundation.
     example: 1983
   modality:
     type: string

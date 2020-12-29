@@ -18,8 +18,10 @@ import (
 
 type Spec struct {
 	Meta       `yaml:"meta,inline"`
-	Paths      *Paths      `yaml:"paths,omitempty"`
-	Components *Components `yaml:"components,omitempty"`
+	Paths      []Path            `yaml:"paths,omitempty"`
+	Schemas    []Schema          `yaml:"schemas,omitempty"`
+	SchemaMap  map[string]Schema `yaml:"-"`
+	Parameters []Parameter       `yaml:"parameters,omitempty"`
 }
 
 type Meta struct {
@@ -29,34 +31,30 @@ type Meta struct {
 }
 
 type Path struct {
-	Key   string               `yaml:"key,omitempty"`
-	File  string               `yaml:"file,omitempty"`
-	Ref   string               `yaml:"$ref,omitempty"`
-	Map   map[string]*Endpoint `yaml:"map"`
-	Slice []*Endpoint          `yaml:"slice"`
+	Key       string     `yaml:"key,omitempty"`
+	File      string     `yaml:"file,omitempty"`
+	Ref       string     `yaml:"$ref,omitempty"`
+	Endpoints []Endpoint `yaml:"endpoints"`
 }
 
 type Endpoint struct {
-	Method      string       `yaml:"method,omitempty"`
-	Summary     string       `yaml:"summary,omitempty"`
-	Description string       `yaml:"description,omitempty"`
-	Tags        []string     `yaml:"tags,omitempty"`
-	OperationID string       `yaml:"operationId,omitempty"`
-	Parameters  []*Parameter `yaml:"parameters,omitempty"`
-	RequestBody *RequestBody `yaml:"requestBody,omitempty"`
-	Responses   *Responses   `yaml:"responses,omitempty"`
+	Method      string      `yaml:"method,omitempty"`
+	Summary     string      `yaml:"summary,omitempty"`
+	Description string      `yaml:"description,omitempty"`
+	Tags        []string    `yaml:"tags,omitempty"`
+	OperationID string      `yaml:"operationId,omitempty"`
+	Parameters  []Parameter `yaml:"parameters,omitempty"`
+	RequestBody RequestBody `yaml:"requestBody,omitempty"`
+	Responses   []Response  `yaml:"responses,omitempty"`
 }
 
 type Parameter struct {
-	// Key mapping key
-	Key string `yaml:"key,omitempty"`
-
-	Ref         string  `yaml:"$ref,omitempty"`
-	In          string  `yaml:"in,omitempty"`
-	Name        string  `yaml:"name,omitempty"`
-	Required    bool    `yaml:"required,omitempty"`
-	Description string  `yaml:"description,omitempty"`
-	Schema      *Schema `yaml:"schema,omitempty"`
+	Ref         string `yaml:"$ref,omitempty"`
+	In          string `yaml:"in,omitempty"`
+	Name        string `yaml:"name,omitempty"`
+	Required    bool   `yaml:"required,omitempty"`
+	Description string `yaml:"description,omitempty"`
+	Schema      Schema `yaml:"schema,omitempty"`
 }
 
 type Contact struct {
@@ -66,10 +64,10 @@ type Contact struct {
 }
 
 type Info struct {
-	Title       string   `yaml:"title,omitempty"`
-	Description string   `yaml:"description,omitempty"`
-	Contact     *Contact `yaml:"contact"`
-	APIVersion  string   `yaml:"version,omitempty"`
+	Title       string  `yaml:"title,omitempty"`
+	Description string  `yaml:"description,omitempty"`
+	Contact     Contact `yaml:"contact"`
+	APIVersion  string  `yaml:"version,omitempty"`
 }
 
 type Server struct {
@@ -83,23 +81,35 @@ type EnumOptionX struct {
 }
 
 type EnumX struct {
-	// Options has the raw options
-	Options []string
-	// Map holds all the options and the extended descriptions
-	Map map[string]*EnumOptionX
-	// Slice holds the options in the same order has defined in the spec file.
-	Slice []*EnumOptionX
+	// options has the raw options
+	options []string
+	// schemas holds all the options and the extended descriptions
+	mapOptions map[string]EnumOptionX
+	// keys holds the options in the same order has defined in the spec file.
+	keys []string
 }
 
-type Components struct {
-	Schemas    *Schemas    `yaml:"schemas,omitempty"`
-	Parameters *Parameters `yaml:"parameters,omitempty"`
+func (e EnumX) Options() []EnumOptionX {
+	var options []EnumOptionX
+	for _, k := range e.keys {
+		options = append(options, e.mapOptions[k])
+	}
+	return options
 }
 
 type Schema struct {
-	File             string   `yaml:"file,omitempty"`
-	Ref              string   `yaml:"ref,omitempty"`
-	Key              string   `yaml:"key,omitempty"`
+	// Key is dependent on where the schema was found. It may represent the name
+	// of the Schema if it's the root spec components map, but it's
+	// the key of the property is it was found as a nested schema.
+	Key string `yaml:"key,omitempty"`
+	// File holds the name of the file where the schema is defined
+	// components schemas section
+	File string `yaml:"file,omitempty"`
+	// Key is the name of the schema if it's present in the
+	// components schemas section
+	Name string `yaml:"name,omitempty"`
+
+	Ref              string   `yaml:"$ref,omitempty"`
 	Type             string   `yaml:"type,omitempty"`
 	Description      string   `yaml:"description,omitempty"`
 	Title            string   `yaml:"title,omitempty"`
@@ -121,27 +131,29 @@ type Schema struct {
 	MinProperties    int      `yaml:"minProperties,omitempty"`
 	MaxProperties    int      `yaml:"maxProperties,omitempty"`
 	Enum             []string `yaml:"enum,omitempty"`
-	EnumX            *EnumX   `yaml:"x-enum,omitempty"`
+	EnumX            EnumX    `yaml:"x-enum,omitempty"`
 	Example          string   `yaml:"example,omitempty"`
 	Default          string   `yaml:"default,omitempty"`
-	Properties       *Schemas `yaml:"properties,omitempty"`
+	Properties       []Schema `yaml:"properties,omitempty"`
 	Items            *Schema  `yaml:"items,omitempty"`
+
+	solve string
 }
 
-func (s *Schema) isRef() bool {
+func (s Schema) isRef() bool {
 	return s.Ref != ""
 }
 
-func (s *Schema) JSON() (string, error) {
+func (s Schema) JSON() (string, error) {
 	var b strings.Builder
-	err := jsonSchema(s, &b, false)
+	err := jsonSchema(&s, &b, false)
 	if err != nil {
 		return "", err
 	}
 	return b.String(), nil
 }
 
-func (s *Schema) JSONIndent(indent string) (string, error) {
+func (s Schema) JSONIndent(indent string) (string, error) {
 	var buf bytes.Buffer
 	src, err := s.JSON()
 	if err != nil {
@@ -153,13 +165,13 @@ func (s *Schema) JSONIndent(indent string) (string, error) {
 	return buf.String(), nil
 }
 
-func jsonSchema(s *Schema, b *strings.Builder, withName bool) error {
+func jsonSchema(s *Schema, b *strings.Builder, withKey bool) error {
 	clean := func(s string) string {
 		return strings.Trim(s, "\n ")
 	}
 	key := clean(s.Key)
 	ex := clean(s.Example)
-	if withName && key != "" {
+	if withKey && key != "" {
 		b.WriteByte('"')
 		b.WriteString(key)
 		b.WriteString(`":`)
@@ -167,11 +179,11 @@ func jsonSchema(s *Schema, b *strings.Builder, withName bool) error {
 	switch s.Type {
 	case "object":
 		b.WriteByte('{')
-		for i, p := range s.Properties.Slice {
+		for i, p := range s.Properties {
 			if i > 0 {
 				b.WriteByte(',')
 			}
-			if err := jsonSchema(p, b, true); err != nil {
+			if err := jsonSchema(&p, b, true); err != nil {
 				return err
 			}
 		}
@@ -231,30 +243,24 @@ func jsonSchema(s *Schema, b *strings.Builder, withName bool) error {
 }
 
 type Response struct {
-	Ref          string                `yaml:"$ref,omitempty"`
-	File         string                `yaml:"file,omitempty"`
-	Key          string                `yaml:"key,omitempty"`
-	Description  string                `yaml:"description,omitempty"`
-	ContentTypes map[string]*MediaType `yaml:"content,omitempty"`
-	Headers      map[string]*Header    `yaml:"headers,omitempty"`
-}
-
-type Header struct {
-	Schema      *Schema `yaml:"schema,omitempty"`
-	Description string  `yaml:"description,omitempty"`
+	Ref          string               `yaml:"$ref,omitempty"`
+	File         string               `yaml:"file,omitempty"`
+	Key          string               `yaml:"key,omitempty"`
+	Description  string               `yaml:"description,omitempty"`
+	ContentTypes map[string]MediaType `yaml:"content,omitempty"`
 }
 
 type RequestBody struct {
-	Required    bool                  `yaml:"required,omitempty"`
-	Description string                `yaml:"description,omitempty"`
-	Content     map[string]*MediaType `yaml:"content,omitempty"`
+	Required    bool                 `yaml:"required,omitempty"`
+	Description string               `yaml:"description,omitempty"`
+	Content     map[string]MediaType `yaml:"content,omitempty"`
 }
 
 type MediaType struct {
-	File     string  `yaml:"file,omitempty"`
-	Schema   *Schema `yaml:"schema,omitempty"`
-	Example  string  `yaml:"example,omitempty"`
-	Examples string  `yaml:"examples,omitempty"`
+	File     string `yaml:"file,omitempty"`
+	Schema   Schema `yaml:"schema,omitempty"`
+	Example  string `yaml:"example,omitempty"`
+	Examples string `yaml:"examples,omitempty"`
 }
 
 type reference struct {
@@ -263,36 +269,58 @@ type reference struct {
 
 type parser struct {
 	specFile   string
-	parameters *Parameters
-	schemas    *Schemas
-	paths      *Paths
+	parameters map[string]Parameter
+	schemas    map[string]Schema
+	paths      map[string]Path
 
-	schemaCallbacks map[string][]func(*Schema)
-	schemasParsed   map[string]*Schema
-	responsesParsed map[string]*Response
-	pathsParsed     map[string]*Path
+	schemasParsed   map[string]Schema
+	responsesParsed map[string]Response
+	pathsParsed     map[string]Path
+	schemaPromises  map[string]struct{}
 }
 
-func (p *parser) promiseSchema(name string, schema *Schema) *Schema {
-	p.schemaCallbacks[name] = append(p.schemaCallbacks[name], func(final *Schema) {
-		*schema = *final
-	})
-	return schema
+func (p *parser) completeSchemas(keys []string) []Schema {
+	var (
+		list  = make([]Schema, len(keys))
+		names = make(map[string]string, len(keys))
+	)
+	for _, x := range p.schemas {
+		names[x.File] = x.Name
+	}
+	for i, k := range keys {
+		x := p.schemas[k]
+		p.completeSchema(&x, names)
+		p.schemas[k] = x
+		p.schemasParsed[x.File] = x // overwrite with the updated values.
+		list[i] = x
+	}
+	return list
 }
 
-func (p *parser) resolveSchemaCallbacks() {
-	for name, schema := range p.schemas.Map {
-		for _, f := range p.schemaCallbacks[name] {
-			f(schema)
+func (p *parser) completeSchema(x *Schema, names map[string]string) {
+	if x == nil {
+		return
+	}
+	for i, prop := range x.Properties {
+		p.completeSchema(&prop, names)
+		x.Properties[i] = prop
+	}
+	p.completeSchema(x.Items, names)
+	if x.solve != "" {
+		xx, ok := p.schemas[x.solve]
+		if !ok {
+			panic(fmt.Errorf("cannot find schema named %s", x.solve))
 		}
-		delete(p.schemaCallbacks, name)
+		key := x.Key // keep the key
+		*x = xx
+		(*x).Key = key
 	}
-	var missing []string
-	for name := range p.schemaCallbacks {
-		missing = append(missing, name)
-	}
-	if len(missing) > 0 {
-		panic(fmt.Errorf("missing component schemas: %s", strings.Join(missing, ",")))
+	if x.Name == "" {
+		if name, ok := names[x.File]; ok {
+			// if not found means the schema imported a file
+			// but is in the list of #/components/schemas
+			(*x).Name = name
+		}
 	}
 }
 
@@ -314,10 +342,10 @@ func Parse(file string) (spec *Spec, err error) {
 func newParser(file string) *parser {
 	return &parser{
 		specFile:        absolutePath(file),
-		schemasParsed:   make(map[string]*Schema),
-		schemaCallbacks: make(map[string][]func(schema *Schema)),
-		pathsParsed:     make(map[string]*Path),
-		responsesParsed: make(map[string]*Response),
+		schemasParsed:   make(map[string]Schema),
+		pathsParsed:     make(map[string]Path),
+		responsesParsed: make(map[string]Response),
+		schemaPromises:  make(map[string]struct{}),
 	}
 }
 
@@ -340,20 +368,18 @@ func (p *parser) parse() *Spec {
 		"parameters": yaml.MappingNode,
 	})
 	if x, ok := components["parameters"]; ok {
-		p.parameters = p.parseParameters(x)
+		params := p.parseParameters(x)
+		p.parameters = params.Map
 	}
-	p.schemas = p.parseSchemas(components["schemas"])
-	p.resolveSchemaCallbacks()
-
-	p.paths = p.parsePaths(content["paths"])
+	keys, schemas := p.parseSchemas(components["schemas"])
+	p.schemas = schemas
+	list := p.completeSchemas(keys)
 
 	return &Spec{
-		Meta:  meta,
-		Paths: p.paths,
-		Components: &Components{
-			Schemas:    p.schemas,
-			Parameters: p.parameters,
-		},
+		Meta:      meta,
+		Paths:     p.parsePaths(content["paths"]),
+		Schemas:   list,
+		SchemaMap: p.schemas,
 	}
 }
 
@@ -361,13 +387,13 @@ func (p *parser) parse() *Spec {
 // but also as an slice with the same order
 // they were found during parsing.
 type Parameters struct {
-	Map   map[string]*Parameter `yaml:"map"`
-	Slice []*Parameter          `yaml:"slice"`
+	Map  map[string]Parameter `yaml:"map"`
+	Keys []string             `yaml:"keys"`
 }
 
-func (p *parser) parseParameters(nodes []*yaml.Node) *Parameters {
-	params := &Parameters{
-		Map: make(map[string]*Parameter),
+func (p *parser) parseParameters(nodes []*yaml.Node) Parameters {
+	params := Parameters{
+		Map: make(map[string]Parameter),
 	}
 	for i := 0; i < len(nodes); i++ {
 		n := nodes[i]
@@ -378,11 +404,10 @@ func (p *parser) parseParameters(nodes []*yaml.Node) *Parameters {
 		next := assertNextKind(nodes, &i, yaml.MappingNode)
 		var param Parameter
 		assertNodeDecode(next, &param)
-		assertNotRef(param.Schema)
-		param.Key = key
+		assertNotRef(&param.Schema)
 
-		params.Map[key] = &param
-		params.Slice = append(params.Slice, &param)
+		params.Map[key] = param
+		params.Keys = append(params.Keys, key)
 	}
 	return params
 }
@@ -399,8 +424,8 @@ func assertNotRef(schema *Schema) {
 	if schema.Properties == nil {
 		return
 	}
-	for _, p := range schema.Properties.Map {
-		assertNotRef(p)
+	for _, p := range schema.Properties {
+		assertNotRef(&p)
 	}
 }
 
@@ -421,24 +446,22 @@ func rootNodeContent(root *yaml.Node) []*yaml.Node {
 }
 
 type Schemas struct {
-	Map   map[string]*Schema `yaml:"map"`
-	Slice []*Schema          `yaml:"slice"`
+	Map  map[string]Schema `yaml:"map"`
+	Keys []string          `yaml:"keys"`
 }
 
 type Responses struct {
-	Map   map[string]*Response `yaml:"map"`
-	Slice []*Response          `yaml:"slice"`
+	Map  map[string]Response `yaml:"map"`
+	Keys []string            `yaml:"keys"`
 }
 
 type Paths struct {
-	Map   map[string]*Path `yaml:"map"`
-	Slice []*Path          `yaml:"slice"`
+	Map  map[string]Path `yaml:"map"`
+	Keys []string        `yaml:"key"`
 }
 
-func (p *parser) parseSchemas(nodes []*yaml.Node) *Schemas {
-	schemas := &Schemas{
-		Map: make(map[string]*Schema),
-	}
+func (p *parser) parseSchemas(nodes []*yaml.Node) (keys []string, schemas map[string]Schema) {
+	schemas = make(map[string]Schema)
 	for i := 0; i < len(nodes); i++ {
 		n := nodes[i]
 		if n.Kind != yaml.ScalarNode {
@@ -452,17 +475,15 @@ func (p *parser) parseSchemas(nodes []*yaml.Node) *Schemas {
 
 		// parse schemas recursively
 		s := p.parseSchemaRef(p.specFile, ref.Ref, nil)
-		s.Key = key
-		schemas.Map[key] = s
-		schemas.Slice = append(schemas.Slice, s)
+		s.Name = key
+		schemas[key] = s
+		keys = append(keys, key)
 	}
-	return schemas
+	return keys, schemas
 }
 
-func (p *parser) parsePaths(nodes []*yaml.Node) *Paths {
-	paths := &Paths{
-		Map: make(map[string]*Path),
-	}
+func (p *parser) parsePaths(nodes []*yaml.Node) []Path {
+	var paths []Path
 	for i := 0; i < len(nodes); i++ {
 		n := nodes[i]
 		if n.Kind != yaml.ScalarNode {
@@ -476,8 +497,7 @@ func (p *parser) parsePaths(nodes []*yaml.Node) *Paths {
 
 		path := p.parsePathRef(p.specFile, ref.Ref, nil)
 		path.Key = key
-		paths.Map[key] = path
-		paths.Slice = append(paths.Slice, path)
+		paths = append(paths, path)
 	}
 	return paths
 }
@@ -523,7 +543,7 @@ func captureRaw(key string, node *yaml.Node) string {
 	return string(raw)
 }
 
-func (p *parser) parseResponseRef(currentFile string, ref string, files []string) (response *Response) {
+func (p *parser) parseResponseRef(currentFile string, ref string, files []string) (response Response) {
 	// Check if we have parsed it already
 	dir := filepath.Dir(currentFile)
 	responseFile := filepath.Join(dir, ref)
@@ -550,7 +570,7 @@ func (p *parser) parseResponseRef(currentFile string, ref string, files []string
 	return response
 }
 
-func (p *parser) parseSchemaRef(currentFile string, ref string, files []string) (schema *Schema) {
+func (p *parser) parseSchemaRef(currentFile string, ref string, files []string) Schema {
 	// Check if we have parsed it already
 	dir := filepath.Dir(currentFile)
 	schemaFile := filepath.Join(dir, ref)
@@ -569,7 +589,7 @@ func (p *parser) parseSchemaRef(currentFile string, ref string, files []string) 
 	dir = fileDir(schemaFile)
 	content := rootNodeContent(&root)
 
-	schema = p.parseSchemaContent(schemaFile, content, append(files, schemaFile))
+	schema := p.parseSchemaContent(schemaFile, content, append(files, schemaFile))
 	schema.File = schemaFile
 	schema.Ref = ref
 	p.schemasParsed[schemaFile] = schema
@@ -577,7 +597,7 @@ func (p *parser) parseSchemaRef(currentFile string, ref string, files []string) 
 	return schema
 }
 
-func (p *parser) parsePathRef(currentFile string, ref string, files []string) (path *Path) {
+func (p *parser) parsePathRef(currentFile string, ref string, files []string) (path Path) {
 	// Check if we have parsed it already
 	dir := filepath.Dir(currentFile)
 	pathFile := filepath.Join(dir, ref)
@@ -604,8 +624,7 @@ func (p *parser) parsePathRef(currentFile string, ref string, files []string) (p
 	return path
 }
 
-func (p *parser) solveSchemaRef(currentFile string, files []string, schema *Schema) *Schema {
-	ref := schema.Ref
+func (p *parser) solveSchemaRef(currentFile string, ref string, files []string) Schema {
 	dir := filepath.Dir(currentFile)
 	idx := strings.Index(ref, "#")
 	if idx == -1 {
@@ -628,15 +647,17 @@ func (p *parser) solveSchemaRef(currentFile string, files []string, schema *Sche
 		panic(fmt.Errorf("only local references to root component schemas are supported, got: %q", ref))
 	}
 
+	if x, ok := p.schemasParsed[file]; ok {
+		return x
+	}
+
 	// we may have a reference to a component that has not been
-	// parsed yet... but we don't have the file, we'll have to make
-	// to register a promise.
-	return p.promiseSchema(ref[21:], schema)
+	// parsed yet...
+	return Schema{solve: ref[21:]}
 }
 
 // parseSchemaContent must contain the
-func (p *parser) parseSchemaContent(currentFile string, content []*yaml.Node, files []string) (schema *Schema) {
-	schema = new(Schema)
+func (p *parser) parseSchemaContent(currentFile string, content []*yaml.Node, files []string) (schema Schema) {
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -645,7 +666,7 @@ func (p *parser) parseSchemaContent(currentFile string, content []*yaml.Node, fi
 		switch v := n.Value; v {
 		case "$ref":
 			schema.Ref = strings.TrimSpace(assertNextKind(content, &i, yaml.ScalarNode).Value)
-			return p.solveSchemaRef(currentFile, files, schema)
+			return p.solveSchemaRef(currentFile, schema.Ref, files)
 		case "type":
 			schema.Type = assertNextKind(content, &i, yaml.ScalarNode).Value
 		case "description":
@@ -697,7 +718,8 @@ func (p *parser) parseSchemaContent(currentFile string, content []*yaml.Node, fi
 		case "properties":
 			schema.Properties = p.parseProperties(currentFile, assertNextKind(content, &i, yaml.MappingNode).Content, files)
 		case "items":
-			schema.Items = p.parseSchemaContent(currentFile, assertNextKind(content, &i, yaml.MappingNode).Content, files)
+			x := p.parseSchemaContent(currentFile, assertNextKind(content, &i, yaml.MappingNode).Content, files)
+			schema.Items = &x
 		default:
 			panic(fmt.Errorf("unsupported shcema definfintion key %q at %s", v, schema.File))
 		}
@@ -705,9 +727,9 @@ func (p *parser) parseSchemaContent(currentFile string, content []*yaml.Node, fi
 	return schema
 }
 
-func (p *parser) parseEnumX(nodes []*yaml.Node) (x *EnumX) {
-	x = &EnumX{
-		Map: make(map[string]*EnumOptionX),
+func (p *parser) parseEnumX(nodes []*yaml.Node) (x EnumX) {
+	x = EnumX{
+		mapOptions: make(map[string]EnumOptionX),
 	}
 	for i := 0; i < len(nodes); i++ {
 		n := nodes[i]
@@ -716,21 +738,17 @@ func (p *parser) parseEnumX(nodes []*yaml.Node) (x *EnumX) {
 		}
 		key := n.Value
 		next := assertNextKind(nodes, &i, yaml.ScalarNode)
-		opt := &EnumOptionX{
+		opt := EnumOptionX{
 			Key:         key,
 			Description: next.Value,
 		}
-		x.Map[key] = opt
-		x.Slice = append(x.Slice, opt)
-		x.Options = append(x.Options, key)
+		x.mapOptions[key] = opt
+		x.keys = append(x.keys, key)
 	}
 	return x
 }
 
-func (p *parser) parsePathFileContent(currentFile string, content []*yaml.Node, files []string) (path *Path) {
-	path = &Path{
-		Map: make(map[string]*Endpoint),
-	}
+func (p *parser) parsePathFileContent(currentFile string, content []*yaml.Node, files []string) (path Path) {
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -739,13 +757,13 @@ func (p *parser) parsePathFileContent(currentFile string, content []*yaml.Node, 
 		method := n.Value
 		next := assertNextKind(content, &i, yaml.MappingNode)
 		e := p.parsePathEndpoint(currentFile, assertContent(next, -1), files)
-		path.Map[method] = e
-		path.Slice = append(path.Slice, e)
+		e.Method = method
+		path.Endpoints = append(path.Endpoints, e)
 	}
 	return path
 }
 
-func (p *parser) parseEndpointParameters(currentFile string, nodes []*yaml.Node) (params []*Parameter) {
+func (p *parser) parseEndpointParameters(currentFile string, nodes []*yaml.Node) (params []Parameter) {
 	for i := 0; i < len(nodes); i++ {
 		n := nodes[i]
 		if n.Kind != yaml.MappingNode {
@@ -779,23 +797,25 @@ func (p *parser) parseEndpointParameters(currentFile string, nodes []*yaml.Node)
 				panic(fmt.Errorf("only local references to root component schemas are supported, got: %q", ref))
 			}
 			paramKey := ref[24:]
-			if x, ok := p.parameters.Map[paramKey]; ok {
-				params = append(params, x)
-				continue
+			x, ok := p.parameters[paramKey]
+			if !ok {
+				panic(fmt.Errorf("undefined parameter %q at: %q", ref, currentFile))
+
 			}
+			params = append(params, x)
+			continue
 		}
-		if param.Schema == nil {
+		if param.Schema.Type == "" {
 			panic(fmt.Errorf("no schema defined for path parameter at: %q", currentFile))
 		}
-		assertNotRef(param.Schema)
-		params = append(params, &param)
+		assertNotRef(&param.Schema)
+		params = append(params, param)
 	}
 
 	return params
 }
 
-func (p *parser) parsePathEndpoint(currentFile string, content []*yaml.Node, files []string) (endpoint *Endpoint) {
-	endpoint = new(Endpoint)
+func (p *parser) parsePathEndpoint(currentFile string, content []*yaml.Node, files []string) (endpoint Endpoint) {
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -827,10 +847,7 @@ func (p *parser) parsePathEndpoint(currentFile string, content []*yaml.Node, fil
 	return endpoint
 }
 
-func (p *parser) parsePathResponses(currentFile string, content []*yaml.Node, files []string) (responses *Responses) {
-	responses = &Responses{
-		Map: make(map[string]*Response),
-	}
+func (p *parser) parsePathResponses(currentFile string, content []*yaml.Node, files []string) (responses []Response) {
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -842,23 +859,21 @@ func (p *parser) parsePathResponses(currentFile string, content []*yaml.Node, fi
 		if err := next.Decode(&ref); err != nil {
 			panic(fmt.Errorf("cannot decode path response %w at %s (%s)", err, currentFile, status))
 		}
-		var res *Response
+		var res Response
 		if ref.Ref != "" {
 			res = p.parseResponseRef(currentFile, ref.Ref, files)
 			res.Ref = ref.Ref
-
 		} else {
 			res = p.parseResponseContent(currentFile, assertContent(next, -1), files)
 		}
-		responses.Map[status] = res
-		responses.Slice = append(responses.Slice, res)
+		res.Key = status
+		responses = append(responses, res)
 	}
 
 	return responses
 }
 
-func (p *parser) parseRequestBody(currentFile string, content []*yaml.Node, files []string) (body *RequestBody) {
-	body = new(RequestBody)
+func (p *parser) parseRequestBody(currentFile string, content []*yaml.Node, files []string) (body RequestBody) {
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -883,8 +898,8 @@ func (p *parser) parseRequestBody(currentFile string, content []*yaml.Node, file
 	return body
 }
 
-func (p *parser) parseMediaTypes(currentFile string, content []*yaml.Node, files []string) (mediaTypes map[string]*MediaType) {
-	mediaTypes = make(map[string]*MediaType)
+func (p *parser) parseMediaTypes(currentFile string, content []*yaml.Node, files []string) (mediaTypes map[string]MediaType) {
+	mediaTypes = make(map[string]MediaType)
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -900,8 +915,7 @@ func (p *parser) parseMediaTypes(currentFile string, content []*yaml.Node, files
 	return mediaTypes
 }
 
-func (p *parser) parseMediaType(currentFile string, content []*yaml.Node, files []string) (mediaType *MediaType) {
-	mediaType = new(MediaType)
+func (p *parser) parseMediaType(currentFile string, content []*yaml.Node, files []string) (mediaType MediaType) {
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -923,8 +937,7 @@ func (p *parser) parseMediaType(currentFile string, content []*yaml.Node, files 
 	return mediaType
 }
 
-func (p *parser) parseResponseContent(currentFile string, content []*yaml.Node, files []string) (response *Response) {
-	response = new(Response)
+func (p *parser) parseResponseContent(currentFile string, content []*yaml.Node, files []string) (response Response) {
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -976,10 +989,7 @@ func (p *parser) parseResponseContentTypes(currentFile string, content []*yaml.N
 	return ct
 }
 
-func (p *parser) parseProperties(currentFile string, content []*yaml.Node, files []string) *Schemas {
-	props := &Schemas{
-		Map: make(map[string]*Schema),
-	}
+func (p *parser) parseProperties(currentFile string, content []*yaml.Node, files []string) (props []Schema) {
 	for i := 0; i < len(content); i++ {
 		n := content[i]
 		if n.Kind != yaml.ScalarNode {
@@ -989,10 +999,9 @@ func (p *parser) parseProperties(currentFile string, content []*yaml.Node, files
 		next := assertNextKind(content, &i, yaml.MappingNode)
 
 		schema := p.parseSchemaContent(currentFile, next.Content, files)
-		schema.Key = key
 		schema.File = currentFile
-		props.Map[key] = schema
-		props.Slice = append(props.Slice, schema)
+		schema.Key = key
+		props = append(props, schema)
 	}
 	return props
 }
