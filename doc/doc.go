@@ -236,14 +236,15 @@ type Tag struct {
 }
 
 type Endpoint struct {
-	Summary        string
-	Description    string
-	Method         string
-	Status         string
-	Path           string
-	RequestBody    string
-	PathWithParams string
-	Response       string
+	Summary             string
+	Description         string
+	Method              string
+	Status              string
+	Path                string
+	RequestBody         string
+	PathWithParams      string
+	Response            string
+	ResponseDescription string
 }
 
 // PathTags builds a lis of tags that contain the paths belonging to
@@ -288,14 +289,15 @@ func EndpointsByTagWithIndent(spec *openapiparser.Spec, indent string) (tags []T
 			}
 			tag.Name = name
 			tag.Endpoint = append(tag.Endpoint, Endpoint{
-				Summary:        ep.Summary,
-				Description:    ep.Description,
-				Method:         ep.Method,
-				Path:           p.Key,
-				PathWithParams: replacePathParams(p.Key, ep),
-				RequestBody:    rb,
-				Status:         res.Status,
-				Response:       ex,
+				Summary:             ep.Summary,
+				Description:         ep.Description,
+				Method:              ep.Method,
+				Path:                p.Key,
+				PathWithParams:      replacePathParams(p.Key, ep),
+				RequestBody:         rb,
+				Status:              res.Status,
+				Response:            ex,
+				ResponseDescription: res.Description,
 			})
 			found[name] = tag
 		}

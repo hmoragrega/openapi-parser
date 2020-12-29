@@ -203,6 +203,8 @@ var (
             }
           ]
         }
+      responsedescription: |
+        List of **School** resources.
     - summary: Create school
       description: |
         Create new schools.
@@ -287,6 +289,8 @@ var (
             }
           ]
         }
+      responsedescription: |
+        List of **School** resources.
     - summary: Get School Method
       description: |
         Retrieves a school resource using its ID.
@@ -333,5 +337,7 @@ var (
           "createdAt": "2015-12-13T10:05:48+01:00",
           "updatedAt": "2015-12-13T10:05:48+01:00"
         }
+      responsedescription: |
+        **School** resource.
 `)
 )
