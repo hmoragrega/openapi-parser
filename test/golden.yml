@@ -477,7 +477,7 @@ paths:
         - method: post
           summary: Create school
           description: |
-            Create a new schools.
+            Create new schools.
           tags:
             - Schools
           operationId: Create-School

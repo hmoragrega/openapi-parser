@@ -55,7 +55,7 @@ func Resources(spec *openapiparser.Spec) (resources []Resource, err error) {
 // custom indentation for the JSON examples.
 func ResourcesWithJSONIndent(spec *openapiparser.Spec, indent string) (resources []Resource, err error) {
 	for _, x := range spec.Schemas {
-		js, err := x.JSONIndent(indent)
+		js, err := x.JSONIndent(openapiparser.ReadOp, indent)
 		if err != nil {
 			return nil, fmt.Errorf("could not build JSON for schema %s: %v", x.Key, err)
 		}
@@ -236,13 +236,14 @@ type Tag struct {
 }
 
 type Endpoint struct {
-	Summary         string
-	Description     string
-	Method          string
-	Status          string
-	Path            string
-	ExamplePath     string
-	ExampleResponse string
+	Summary        string
+	Description    string
+	Method         string
+	Status         string
+	Path           string
+	RequestBody    string
+	PathWithParams string
+	Response       string
 }
 
 // PathTags builds a lis of tags that contain the paths belonging to
@@ -254,6 +255,10 @@ type Endpoint struct {
 // If an endpoint has more than one tag defined only the first one will be
 // used.
 func EndpointsByTag(spec *openapiparser.Spec) (tags []Tag, err error) {
+	return EndpointsByTagWithIndent(spec, DefaultJSONIndent)
+}
+
+func EndpointsByTagWithIndent(spec *openapiparser.Spec, indent string) (tags []Tag, err error) {
 	found := make(map[string]Tag)
 	var order []string
 	for _, p := range spec.Paths {
@@ -273,19 +278,24 @@ func EndpointsByTag(spec *openapiparser.Spec) (tags []Tag, err error) {
 				return nil, fmt.Errorf("no responses available for endpoint: %s %s", ep.Method, p.Key)
 			}
 			res := ep.Responses[0]
-			ex, err := responseExample(res)
+			ex, err := responseExample(res, indent)
+			if err != nil {
+				return nil, fmt.Errorf("cannot group endpoints by tag: %v", err)
+			}
+			rb, err := requestBody(ep.RequestBody, indent)
 			if err != nil {
 				return nil, fmt.Errorf("cannot group endpoints by tag: %v", err)
 			}
 			tag.Name = name
 			tag.Endpoint = append(tag.Endpoint, Endpoint{
-				Summary:         ep.Summary,
-				Description:     ep.Description,
-				Method:          ep.Method,
-				Path:            p.Key,
-				ExamplePath:     replacePathParams(p.Key, ep),
-				Status:          res.Status,
-				ExampleResponse: ex,
+				Summary:        ep.Summary,
+				Description:    ep.Description,
+				Method:         ep.Method,
+				Path:           p.Key,
+				PathWithParams: replacePathParams(p.Key, ep),
+				RequestBody:    rb,
+				Status:         res.Status,
+				Response:       ex,
 			})
 			found[name] = tag
 		}
@@ -333,11 +343,18 @@ func replacePathParams(path string, ep openapiparser.Endpoint) string {
 	return path
 }
 
-func responseExample(res openapiparser.Response) (string, error) {
+func responseExample(res openapiparser.Response, indent string) (string, error) {
 	for _, m := range res.ContentTypes {
-		return m.Schema.JSON()
+		return m.Schema.JSONIndent(openapiparser.ReadOp, indent)
 	}
 	return "", fmt.Errorf("no content type defined for response: %s", res.Description)
+}
+
+func requestBody(rb openapiparser.RequestBody, indent string) (string, error) {
+	for _, m := range rb.Content {
+		return m.Schema.JSONIndent(openapiparser.WriteOp, indent)
+	}
+	return "", nil
 }
 
 func cleanExample(s string) string {

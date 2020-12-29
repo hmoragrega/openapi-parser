@@ -144,28 +144,36 @@ func (s Schema) isRef() bool {
 	return s.Ref != ""
 }
 
-func (s Schema) JSON() (string, error) {
+type SchemaOp int
+
+const (
+	ReadOp SchemaOp = iota << 1
+	WriteOp
+)
+
+func (s Schema) JSON(op SchemaOp) (string, error) {
 	var b strings.Builder
-	err := jsonSchema(&s, &b, false)
+	err := jsonSchema(op, &s, &b, false)
 	if err != nil {
 		return "", err
 	}
 	return b.String(), nil
 }
 
-func (s Schema) JSONIndent(indent string) (string, error) {
+func (s Schema) JSONIndent(op SchemaOp, indent string) (string, error) {
 	var buf bytes.Buffer
-	src, err := s.JSON()
+	src, err := s.JSON(op)
 	if err != nil {
 		return "", err
 	}
 	if err := json.Indent(&buf, []byte(src), "", indent); err != nil {
+		fmt.Println(src)
 		return "", err
 	}
 	return buf.String(), nil
 }
 
-func jsonSchema(s *Schema, b *strings.Builder, withKey bool) error {
+func jsonSchema(op SchemaOp, s *Schema, b *strings.Builder, withKey bool) error {
 	clean := func(s string) string {
 		return strings.Trim(s, "\n ")
 	}
@@ -179,18 +187,26 @@ func jsonSchema(s *Schema, b *strings.Builder, withKey bool) error {
 	switch s.Type {
 	case "object":
 		b.WriteByte('{')
-		for i, p := range s.Properties {
-			if i > 0 {
+		first := true
+		for _, p := range s.Properties {
+			if p.ReadOnly && op == WriteOp {
+				continue
+			}
+			if p.WriteOnly && op == ReadOp {
+				continue
+			}
+			if !first {
 				b.WriteByte(',')
 			}
-			if err := jsonSchema(&p, b, true); err != nil {
+			first = false
+			if err := jsonSchema(op, &p, b, true); err != nil {
 				return err
 			}
 		}
 		b.WriteByte('}')
 	case "array":
 		b.WriteByte('[')
-		if err := jsonSchema(s.Items, b, false); err != nil {
+		if err := jsonSchema(op, s.Items, b, false); err != nil {
 			return err
 		}
 		b.WriteByte(']')

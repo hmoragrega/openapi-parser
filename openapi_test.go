@@ -35,14 +35,25 @@ func TestParse(t *testing.T) {
 		}
 	})
 
-	t.Run("JSON example output", func(t *testing.T) {
+	t.Run("JSON read example output", func(t *testing.T) {
 		s := spec.SchemaMap["School"]
-		got, err := s.JSONIndent("\t")
+		got, err := s.JSONIndent(openapiparser.ReadOp, "\t")
 		if err != nil {
 			t.Fatalf("error generatiing indented JSON: %v", err)
 		}
-		if got != schoolJSON {
-			t.Fatalf("generated JSON is different. Got:\n%s\n Want:\n%s\n", got, schoolJSON)
+		if got != schoolReadJSON {
+			t.Fatalf("generated JSON is different. Got:\n%s\n Want:\n%s\n", got, schoolReadJSON)
+		}
+	})
+
+	t.Run("JSON write example output", func(t *testing.T) {
+		s := spec.SchemaMap["School"]
+		got, err := s.JSONIndent(openapiparser.WriteOp, "\t")
+		if err != nil {
+			t.Fatalf("error generatiing indented JSON: %v", err)
+		}
+		if got != schoolWriteJSON {
+			t.Fatalf("generated JSON is different. Got:\n%s\n Want:\n%s\n", got, schoolWriteJSON)
 		}
 	})
 }
@@ -57,7 +68,7 @@ func workingDir() []byte {
 }
 
 var (
-	schoolJSON = `{
+	schoolReadJSON = `{
 	"id": "e017d029-a459-4cfc-bf35-dd774ddf50e7",
 	"code": "ru-moscow-101",
 	"name": "Moscow's International Business School - \"Center\"",
@@ -93,5 +104,40 @@ var (
 	"open": true,
 	"createdAt": "2015-12-13T10:05:48+01:00",
 	"updatedAt": "2015-12-13T10:05:48+01:00"
+}`
+
+	schoolWriteJSON = `{
+	"code": "ru-moscow-101",
+	"name": "Moscow's International Business School - \"Center\"",
+	"contacts": [
+		{
+			"email": "email@example.com",
+			"position": "Main office secretary.",
+			"name": "John doe",
+			"priority": "Primary",
+			"phone": [
+				"(555)-1234566789"
+			]
+		}
+	],
+	"main_office": {
+		"street": "Krylatskaya Ulitsa",
+		"number": 22,
+		"area-code": "FRS12-188",
+		"city": "Moscow",
+		"country": "RUS"
+	},
+	"campus": [
+		{
+			"street": "Krylatskaya Ulitsa",
+			"number": 22,
+			"area-code": "FRS12-188",
+			"city": "Moscow",
+			"country": "RUS"
+		}
+	],
+	"foundation_year": 1983,
+	"modality": "Private",
+	"open": true
 }`
 )
