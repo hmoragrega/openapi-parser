@@ -30,11 +30,7 @@ func TestResources(t *testing.T) {
 	})
 
 	t.Run("build enumerations", func(t *testing.T) {
-		res, err := doc.Enumerations(spec)
-		if err != nil {
-			t.Fatalf("failed to build the spec enumerations: %v", err)
-		}
-		got, err := yaml.Marshal(res)
+		got, err := yaml.Marshal(doc.Enumerations(spec))
 		if err != nil {
 			t.Fatalf("failed to marshall the resources as yaml: %v", err)
 		}
