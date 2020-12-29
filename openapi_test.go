@@ -2,7 +2,10 @@ package openapiparser_test
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
+	"os"
+	"path"
 	"testing"
 
 	openapiparser "github.com/hmoragrega/openapi-parser"
@@ -16,7 +19,7 @@ func TestParse(t *testing.T) {
 	}
 
 	t.Run("compare golden file", func(t *testing.T) {
-		generated, err := yaml.Marshal(spec)
+		got, err := yaml.Marshal(spec)
 		if err != nil {
 			t.Fatalf("cannot marshal generated spec: %v", err)
 		}
@@ -24,11 +27,11 @@ func TestParse(t *testing.T) {
 		if err != nil {
 			t.Fatalf("cannot read golden test file: %v", err)
 		}
-		generated = bytes.TrimSpace(generated)
-		golden = bytes.TrimSpace(golden)
+		got = bytes.TrimSpace(got)
+		golden = bytes.TrimSpace(bytes.ReplaceAll(golden, []byte("$PWD"), workingDir()))
 
-		if bytes.Compare(golden, generated) != 0 {
-			t.Errorf("generated file is different")
+		if bytes.Compare(golden, got) != 0 {
+			t.Errorf("generated file is different. Got:\n'%s'\n Want:\n'%s'\n", got, golden)
 		}
 	})
 
@@ -42,6 +45,15 @@ func TestParse(t *testing.T) {
 			t.Fatalf("generated JSON is different. Got:\n%s\n Want:\n%s\n", got, schoolJSON)
 		}
 	})
+}
+
+func workingDir() []byte {
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(fmt.Errorf("cannot get current directory: %v", err))
+	}
+
+	return []byte(path.Clean(wd))
 }
 
 var (
