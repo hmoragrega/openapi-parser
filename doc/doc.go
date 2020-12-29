@@ -11,7 +11,8 @@ import (
 const DefaultJSONIndent = "  "
 
 var (
-	spacesRx = regexp.MustCompile(`\s+`)
+	spacesRx  = regexp.MustCompile(`\s+`)
+	pathParam = regexp.MustCompile("{(\\w+)}")
 )
 
 // Resource is a different representation of a defined schema
@@ -27,7 +28,7 @@ type Resource struct {
 }
 
 type ResourceField struct {
-	// Key a flatten key for the resource filed
+	// Status a flatten key for the resource filed
 	// Examples:
 	//  - foo
 	//  - foo.bar
@@ -156,7 +157,7 @@ type Enum struct {
 }
 
 type Option struct {
-	// Key holds the option value.
+	// Status holds the option value.
 	Value string
 	// Description is only filled if there was a custom "x-enum" entry in the spec file.
 	Description string
@@ -225,4 +226,120 @@ func toTitle(s string) string {
 	s = spacesRx.ReplaceAllString(s, " ")
 
 	return s
+}
+
+type Tag struct {
+	// Tag name
+	Name string
+	// Endpoint list of endpoints with the same tag.
+	Endpoint []Endpoint
+}
+
+type Endpoint struct {
+	Summary         string
+	Description     string
+	Method          string
+	Status          string
+	Path            string
+	ExamplePath     string
+	ExampleResponse string
+}
+
+// PathTags builds a lis of tags that contain the paths belonging to
+// them respecting the order in which they were defined in the spec file.
+//
+// The last tag will be "Default" and contain all the endpoints that have no
+// tags (if any).
+//
+// If an endpoint has more than one tag defined only the first one will be
+// used.
+func EndpointsByTag(spec *openapiparser.Spec) (tags []Tag, err error) {
+	found := make(map[string]Tag)
+	var order []string
+	for _, p := range spec.Paths {
+		for _, ep := range p.Endpoints {
+			name := "Default"
+			if len(ep.Tags[0]) > 0 {
+				name = ep.Tags[0]
+			}
+			tag, ok := found[name]
+			if !ok {
+				found[name] = Tag{
+					Name: name,
+				}
+				order = append(order, name)
+			}
+			if len(ep.Responses) == 0 {
+				return nil, fmt.Errorf("no responses available for endpoint: %s %s", ep.Method, p.Key)
+			}
+			res := ep.Responses[0]
+			ex, err := responseExample(res)
+			if err != nil {
+				return nil, fmt.Errorf("cannot group endpoints by tag: %v", err)
+			}
+			tag.Name = name
+			tag.Endpoint = append(tag.Endpoint, Endpoint{
+				Summary:         ep.Summary,
+				Description:     ep.Description,
+				Method:          ep.Method,
+				Path:            p.Key,
+				ExamplePath:     replacePathParams(p.Key, ep),
+				Status:          res.Status,
+				ExampleResponse: ex,
+			})
+			found[name] = tag
+		}
+	}
+	for _, tag := range order {
+		tags = append(tags, found[tag])
+	}
+	return tags, nil
+}
+
+func replacePathParams(path string, ep openapiparser.Endpoint) string {
+	for _, m := range pathParam.FindAllStringSubmatch(path, -1) {
+		var (
+			tag         = m[0]
+			placeholder = m[1]
+		)
+		for _, param := range ep.Parameters {
+			if param.In != "path" || param.Name != placeholder {
+				continue
+			}
+			var (
+				x = placeholder
+				s = param.Schema
+			)
+			if s.Example != "" {
+				x = cleanExample(s.Example)
+			} else {
+				switch s.Type {
+				case "string":
+					if s.Format == "uuid" {
+						x = "e017d029-a459-4cfc-bf35-dd774ddf50e7"
+						break
+					}
+				case "integer", "number":
+					if s.Format == "double" || s.Format == "float" {
+						x = "100.50"
+						break
+					}
+					x = "100"
+				}
+			}
+			path = strings.ReplaceAll(path, tag, x)
+		}
+	}
+	return path
+}
+
+func responseExample(res openapiparser.Response) (string, error) {
+	for _, m := range res.ContentTypes {
+		return m.Schema.JSON()
+	}
+	return "", fmt.Errorf("no content type defined for response: %s", res.Description)
+}
+
+func cleanExample(s string) string {
+	return strings.TrimSpace(strings.Trim(s, `"`))
 }

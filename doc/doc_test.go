@@ -9,13 +9,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func TestResources(t *testing.T) {
+func TestDoc(t *testing.T) {
 	spec, err := openapiparser.Parse("../api/spec/openapi.yml")
 	if err != nil {
 		t.Fatalf("cannot parse example file: %v", err)
 	}
 
-	t.Run("build resources", func(t *testing.T) {
+	t.Run("resources", func(t *testing.T) {
 		res, err := doc.Resources(spec)
 		if err != nil {
 			t.Fatalf("failed to build the spec resources: %v", err)
@@ -29,13 +29,27 @@ func TestResources(t *testing.T) {
 		}
 	})
 
-	t.Run("build enumerations", func(t *testing.T) {
+	t.Run("enumerations", func(t *testing.T) {
 		got, err := yaml.Marshal(doc.Enumerations(spec))
 		if err != nil {
 			t.Fatalf("failed to marshall the resources as yaml: %v", err)
 		}
 		if bytes.Compare(got, wantEnumerations) != 0 {
 			t.Fatalf("generated yaml is different. Got:\n'%s'\n Want:\n'%s'\n", got, wantEnumerations)
+		}
+	})
+
+	t.Run("endpoints by tag", func(t *testing.T) {
+		tags, err := doc.EndpointsByTag(spec)
+		if err != nil {
+			t.Fatalf("failed to build the spec endpoints by tag: %v", err)
+		}
+		got, err := yaml.Marshal(tags)
+		if err != nil {
+			t.Fatalf("failed to marshall the resources as yaml: %v", err)
+		}
+		if bytes.Compare(got, wantTags) != 0 {
+			t.Fatalf("generated yaml is different. Got:\n'%s'\n Want:\n'%s'\n", got, wantTags)
 		}
 	})
 }
@@ -135,5 +149,33 @@ var (
       description: public school.
     - value: Mixed
       description: public and private.
+`)
+
+	wantTags = []byte(`- name: Schools
+  endpoint:
+    - summary: List schools
+      description: |
+        Lists the schools.
+      method: get
+      status: "200"
+      path: /v1/schools
+      examplepath: /v1/schools
+      exampleresponse: '{"data":[{"id":"e017d029-a459-4cfc-bf35-dd774ddf50e7","code":"ru-moscow-101","name":"Moscow''s International Business School - \"Center\"","contacts":[{"email":"email@example.com","position":"Main office secretary.","name":"John doe","priority":"Primary","phone":["(555)-1234566789"]}],"main_office":{"street":"Krylatskaya Ulitsa","number":22,"area-code":"FRS12-188","city":"Moscow","country":"RUS"},"campus":[{"street":"Krylatskaya Ulitsa","number":22,"area-code":"FRS12-188","city":"Moscow","country":"RUS"}],"foundation_year":1983,"modality":"Private","open":true,"createdAt":"2015-12-13T10:05:48+01:00","updatedAt":"2015-12-13T10:05:48+01:00"}]}'
+    - summary: Create school
+      description: |
+        Create a new schools.
+      method: post
+      status: "200"
+      path: /v1/schools
+      examplepath: /v1/schools
+      exampleresponse: '{"data":[{"id":"e017d029-a459-4cfc-bf35-dd774ddf50e7","code":"ru-moscow-101","name":"Moscow''s International Business School - \"Center\"","contacts":[{"email":"email@example.com","position":"Main office secretary.","name":"John doe","priority":"Primary","phone":["(555)-1234566789"]}],"main_office":{"street":"Krylatskaya Ulitsa","number":22,"area-code":"FRS12-188","city":"Moscow","country":"RUS"},"campus":[{"street":"Krylatskaya Ulitsa","number":22,"area-code":"FRS12-188","city":"Moscow","country":"RUS"}],"foundation_year":1983,"modality":"Private","open":true,"createdAt":"2015-12-13T10:05:48+01:00","updatedAt":"2015-12-13T10:05:48+01:00"}]}'
+    - summary: Get School Method
+      description: |
+        Retrieves a school resource using its ID.
+      method: get
+      status: "200"
+      path: /v1/schools/{uuid}
+      examplepath: /v1/schools/e017d029-a459-4cfc-bf35-dd774ddf50e7
+      exampleresponse: '{"id":"e017d029-a459-4cfc-bf35-dd774ddf50e7","code":"ru-moscow-101","name":"Moscow''s International Business School - \"Center\"","contacts":[{"email":"email@example.com","position":"Main office secretary.","name":"John doe","priority":"Primary","phone":["(555)-1234566789"]}],"main_office":{"street":"Krylatskaya Ulitsa","number":22,"area-code":"FRS12-188","city":"Moscow","country":"RUS"},"campus":[{"street":"Krylatskaya Ulitsa","number":22,"area-code":"FRS12-188","city":"Moscow","country":"RUS"}],"foundation_year":1983,"modality":"Private","open":true,"createdAt":"2015-12-13T10:05:48+01:00","updatedAt":"2015-12-13T10:05:48+01:00"}'
 `)
 )

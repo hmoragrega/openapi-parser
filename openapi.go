@@ -105,7 +105,7 @@ type Schema struct {
 	// File holds the name of the file where the schema is defined
 	// components schemas section
 	File string `yaml:"file,omitempty"`
-	// Key is the name of the schema if it's present in the
+	// Name is the name of the schema if it's present in the
 	// components schemas section
 	Name string `yaml:"name,omitempty"`
 
@@ -245,7 +245,7 @@ func jsonSchema(s *Schema, b *strings.Builder, withKey bool) error {
 type Response struct {
 	Ref          string               `yaml:"$ref,omitempty"`
 	File         string               `yaml:"file,omitempty"`
-	Key          string               `yaml:"key,omitempty"`
+	Status       string               `yaml:"status,omitempty"`
 	Description  string               `yaml:"description,omitempty"`
 	ContentTypes map[string]MediaType `yaml:"content,omitempty"`
 }
@@ -866,7 +866,7 @@ func (p *parser) parsePathResponses(currentFile string, content []*yaml.Node, fi
 		} else {
 			res = p.parseResponseContent(currentFile, assertContent(next, -1), files)
 		}
-		res.Key = status
+		res.Status = status
 		responses = append(responses, res)
 	}
 
