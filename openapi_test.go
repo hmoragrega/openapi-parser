@@ -66,6 +66,7 @@ var (
 			"email": "email@example.com",
 			"position": "Main office secretary.",
 			"name": "John doe",
+			"priority": "Primary",
 			"phone": [
 				"(555)-1234566789"
 			]

@@ -55,6 +55,9 @@ properties:
           description: Contact person's name.
           type: string
           example: John doe
+        priority:
+          type: string
+          enum: ["Primary", "Secondary"]
         phone:
           type: array
           description: Phone numbers.
@@ -81,7 +84,7 @@ properties:
     description: The school education mode.
     enum: ["Private", "Public", "Mixed"]
     x-enum:
-      Private: private shcool.
+      Private: private school.
       Public: public school.
       Mixed: public and private.
   open:
