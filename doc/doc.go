@@ -2,12 +2,17 @@ package doc
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/hmoragrega/openapi-parser"
 )
 
 const DefaultJSONIndent = "  "
+
+var (
+	spacesRx = regexp.MustCompile(`\s+`)
+)
 
 // Resource is a different representation of a defined schema
 type Resource struct {
@@ -139,4 +144,85 @@ func buildResourceFields(x *openapiparser.Schema, name string, keys []string) (f
 	})
 
 	return append(fields, child...), nil
+}
+
+type Enum struct {
+	// Title of the enum, includes the field name an the resource name.
+	Title string
+	// Resource resource name the enum belongs to.
+	Resource string
+	// Options all the available options for the enumeration.
+	Options []Option
+}
+
+type Option struct {
+	// Key holds the option value.
+	Value string
+	// Description is only filled if there was a custom "x-enum" entry in the spec file.
+	Description string
+}
+
+// Enumerations returns a list of enumerations in a spec file.
+func Enumerations(spec *openapiparser.Spec) (enums []Enum) {
+	for _, x := range spec.Schemas {
+		enums = append(enums, schemaEnums(&x, []string{x.Name})...)
+	}
+	return enums
+}
+
+func schemaEnums(x *openapiparser.Schema, keys []string) (enums []Enum) {
+	if x == nil {
+		return enums
+	}
+	if opts := x.EnumX.Options(); len(opts) > 0 {
+		enums = append(enums, enumXToDocEnum(x.EnumX, keys))
+	} else if len(x.Enum) > 0 {
+		enums = append(enums, enumToDocEnum(x.Enum, keys))
+	}
+	for _, p := range x.Properties {
+		enums = append(enums, schemaEnums(&p, append(keys, p.Key))...)
+	}
+	if x.Items != nil {
+		enums = append(enums, schemaEnums(x.Items, append(keys, x.Items.Key))...)
+	}
+	return enums
+}
+
+func enumXToDocEnum(x openapiparser.EnumX, keys []string) Enum {
+	e := Enum{
+		Title:    toTitle(strings.Join(keys, " ")),
+		Resource: keys[0],
+	}
+	for _, o := range x.Options() {
+		e.Options = append(e.Options, Option{
+			Value:       o.Key,
+			Description: o.Description,
+		})
+	}
+	return e
+}
+
+func enumToDocEnum(opts []string, keys []string) Enum {
+	e := Enum{
+		Title:    toTitle(strings.Join(keys, " ")),
+		Resource: keys[0],
+	}
+	for _, o := range opts {
+		e.Options = append(e.Options, Option{
+			Value:       o,
+			Description: "",
+		})
+	}
+	return e
+}
+
+func toTitle(s string) string {
+	s = strings.TrimSpace(s)
+	s = strings.ToLower(s)
+	s = strings.ReplaceAll(s, "_", " ")
+	s = strings.ReplaceAll(s, "-", " ")
+	s = strings.Title(s)
+	s = spacesRx.ReplaceAllString(s, " ")
+
+	return s
 }

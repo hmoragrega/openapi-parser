@@ -28,9 +28,24 @@ func TestResources(t *testing.T) {
 			t.Fatalf("generated yaml is different. Got:\n'%s'\n Want:\n'%s'\n", got, wantResources)
 		}
 	})
+
+	t.Run("build enumerations", func(t *testing.T) {
+		res, err := doc.Enumerations(spec)
+		if err != nil {
+			t.Fatalf("failed to build the spec enumerations: %v", err)
+		}
+		got, err := yaml.Marshal(res)
+		if err != nil {
+			t.Fatalf("failed to marshall the resources as yaml: %v", err)
+		}
+		if bytes.Compare(got, wantEnumerations) != 0 {
+			t.Fatalf("generated yaml is different. Got:\n'%s'\n Want:\n'%s'\n", got, wantEnumerations)
+		}
+	})
 }
 
-var wantResources = []byte(`- key: id
+var (
+	wantResources = []byte(`- key: id
   type: String
   link: ""
   description: Unique ID of the office (UUID v4).
@@ -67,6 +82,10 @@ var wantResources = []byte(`- key: id
   type: String
   link: ""
   description: Contact person's name.
+- key: contacts.#.priority
+  type: String
+  link: ""
+  description: ""
 - key: contacts.#.phone
   type: Array
   link: ""
@@ -104,3 +123,21 @@ var wantResources = []byte(`- key: id
   link: ""
   description: The last time the record was updated.
 `)
+	wantEnumerations = []byte(`- title: School Contacts Priority
+  resource: School
+  options:
+    - value: Primary
+      description: ""
+    - value: Secondary
+      description: ""
+- title: School Modality
+  resource: School
+  options:
+    - value: Private
+      description: private school.
+    - value: Public
+      description: public school.
+    - value: Mixed
+      description: public and private.
+`)
+)
