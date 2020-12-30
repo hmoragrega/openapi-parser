@@ -269,6 +269,14 @@ paths:
                                         - Private
                                         - Public
                                         - Mixed
+                                      x-enum:
+                                        options:
+                                            - title: Private
+                                              description: private school.
+                                            - title: Public
+                                              description: public school.
+                                            - title: Mixed
+                                              description: public and private.
                                     - key: open
                                       file: $PWD/api/spec/schemas/school.yml
                                       name: School
@@ -702,6 +710,14 @@ paths:
                                 - Private
                                 - Public
                                 - Mixed
+                              x-enum:
+                                options:
+                                    - title: Private
+                                      description: private school.
+                                    - title: Public
+                                      description: public school.
+                                    - title: Mixed
+                                      description: public and private.
                             - key: open
                               file: $PWD/api/spec/schemas/school.yml
                               name: School
@@ -958,6 +974,14 @@ paths:
                                         - Private
                                         - Public
                                         - Mixed
+                                      x-enum:
+                                        options:
+                                            - title: Private
+                                              description: private school.
+                                            - title: Public
+                                              description: public school.
+                                            - title: Mixed
+                                              description: public and private.
                                     - key: open
                                       file: $PWD/api/spec/schemas/school.yml
                                       name: School
@@ -1465,6 +1489,14 @@ paths:
                                 - Private
                                 - Public
                                 - Mixed
+                              x-enum:
+                                options:
+                                    - title: Private
+                                      description: private school.
+                                    - title: Public
+                                      description: public school.
+                                    - title: Mixed
+                                      description: public and private.
                             - key: open
                               file: $PWD/api/spec/schemas/school.yml
                               name: School
@@ -1886,6 +1918,14 @@ schemas:
             - Private
             - Public
             - Mixed
+          x-enum:
+            options:
+                - title: Private
+                  description: private school.
+                - title: Public
+                  description: public school.
+                - title: Mixed
+                  description: public and private.
         - key: open
           file: $PWD/api/spec/schemas/school.yml
           name: School

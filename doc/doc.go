@@ -137,7 +137,7 @@ func buildResourceFields(x *openapiparser.Schema, name string, keys []string) (f
 	default:
 		return nil, fmt.Errorf("cannot determine JSON type %q", x.Type)
 	}
-	if len(x.Enum) > 0 || len(x.EnumX.Options()) > 0 {
+	if len(x.Enum) > 0 || len(x.EnumX.Options) > 0 {
 		enumKeys := []string{name}
 		for _, k := range keys {
 			if k != "#" {
@@ -188,7 +188,7 @@ func schemaEnums(x *openapiparser.Schema, keys []string) (enums []Enum) {
 	if x == nil {
 		return enums
 	}
-	if opts := x.EnumX.Options(); len(opts) > 0 {
+	if len(x.EnumX.Options) > 0 {
 		enums = append(enums, enumXToDocEnum(x.EnumX, keys))
 	} else if len(x.Enum) > 0 {
 		enums = append(enums, enumToDocEnum(x.Enum, keys))
@@ -207,7 +207,7 @@ func enumXToDocEnum(x openapiparser.EnumX, keys []string) Enum {
 		Title:    enumTitle(keys),
 		Resource: keys[0],
 	}
-	for _, o := range x.Options() {
+	for _, o := range x.Options {
 		e.Options = append(e.Options, Option{
 			Value:       o.Key,
 			Description: o.Description,

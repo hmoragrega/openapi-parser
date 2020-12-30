@@ -3,9 +3,9 @@ package openapiparser
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -81,20 +81,7 @@ type EnumOptionX struct {
 }
 
 type EnumX struct {
-	// options has the raw options
-	options []string
-	// schemas holds all the options and the extended descriptions
-	mapOptions map[string]EnumOptionX
-	// keys holds the options in the same order has defined in the spec file.
-	keys []string
-}
-
-func (e EnumX) Options() []EnumOptionX {
-	var options []EnumOptionX
-	for _, k := range e.keys {
-		options = append(options, e.mapOptions[k])
-	}
-	return options
+	Options []EnumOptionX
 }
 
 type Schema struct {
@@ -365,15 +352,38 @@ func newParser(file string) *parser {
 	}
 }
 
+type captureFunc func(node *yaml.Node)
+
+type captureMap map[string]captureFunc
+
+func captureString(s *string) captureFunc {
+	return func(node *yaml.Node) {
+		*s = assertString(node)
+	}
+}
+func captureNodeDecode(v interface{}) captureFunc {
+	return func(node *yaml.Node) {
+		panicIfErr(node.Decode(v))
+	}
+}
+
+func panicIfErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (p *parser) parse() *Spec {
-	var root yaml.Node
-	unmarshalFile(p.specFile, &root)
-	rootContent := rootNodeContent(&root)
+	rootContent := fileContent(p.specFile)
 
 	// we can directly decode the meta as it's
-	// content is known in advance.
+	// schemas is fixed and known in advance.
 	var meta Meta
-	assertNodeDecode(&root, &meta)
+	captureContent2(rootContent, map[string]captureFunc{
+		"openapi": captureString(&meta.OpenAPI),
+		"info":    captureNodeDecode(&meta.Info),
+		"servers": captureNodeDecode(&meta.Servers),
+	}, nil)
 
 	content := captureContent(rootContent, map[string]yaml.Kind{
 		"paths":      yaml.MappingNode,
@@ -407,21 +417,17 @@ type Parameters struct {
 	Keys []string             `yaml:"keys"`
 }
 
-func (p *parser) parseParameters(nodes []*yaml.Node) Parameters {
+func (p *parser) parseParameters(content []*yaml.Node) Parameters {
 	params := Parameters{
 		Map: make(map[string]Parameter),
 	}
-	for i := 0; i < len(nodes); i++ {
-		n := nodes[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		key := n.Value
-		next := assertNextKind(nodes, &i, yaml.MappingNode)
+	for _, v := range mapPairs(content) {
+		next := assertKind(v.node, yaml.MappingNode)
 		var param Parameter
 		assertNodeDecode(next, &param)
 		assertNotRef(&param.Schema)
 
+		key := v.key
 		params.Map[key] = param
 		params.Keys = append(params.Keys, key)
 	}
@@ -476,17 +482,13 @@ type Paths struct {
 	Keys []string        `yaml:"key"`
 }
 
-func (p *parser) parseSchemas(nodes []*yaml.Node) (keys []string, schemas map[string]Schema) {
+func (p *parser) parseSchemas(content []*yaml.Node) (keys []string, schemas map[string]Schema) {
 	schemas = make(map[string]Schema)
-	for i := 0; i < len(nodes); i++ {
-		n := nodes[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		key := n.Value
-		next := assertNextKind(nodes, &i, yaml.MappingNode)
+	for _, v := range mapPairs(content) {
+		key := v.key
 		var ref reference
-		assertNodeDecode(next, &ref)
+		assertKind(v.node, yaml.MappingNode)
+		assertNodeDecode(v.node, &ref)
 		assertRef(key, &ref)
 
 		// parse schemas recursively
@@ -498,15 +500,11 @@ func (p *parser) parseSchemas(nodes []*yaml.Node) (keys []string, schemas map[st
 	return keys, schemas
 }
 
-func (p *parser) parsePaths(nodes []*yaml.Node) []Path {
+func (p *parser) parsePaths(content []*yaml.Node) []Path {
 	var paths []Path
-	for i := 0; i < len(nodes); i++ {
-		n := nodes[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		key := n.Value
-		next := assertNextKind(nodes, &i, yaml.MappingNode)
+	for _, v := range mapPairs(content) {
+		key := v.key
+		next := assertKind(v.node, yaml.MappingNode)
 		var ref reference
 		assertNodeDecode(next, &ref)
 		assertRef(key, &ref)
@@ -572,11 +570,7 @@ func (p *parser) parseResponseRef(currentFile string, ref string, files []string
 		}
 	}
 
-	var root yaml.Node
-	data := readFile(responseFile)
-	unmarshal(data, &root)
-	dir = fileDir(responseFile)
-	content := rootNodeContent(&root)
+	content := fileContent(responseFile)
 
 	response = p.parseResponseContent(responseFile, content, append(files, responseFile))
 	response.File = responseFile
@@ -599,12 +593,7 @@ func (p *parser) parseSchemaRef(currentFile string, ref string, files []string) 
 		}
 	}
 
-	var root yaml.Node
-	data := readFile(schemaFile)
-	unmarshal(data, &root)
-	dir = fileDir(schemaFile)
-	content := rootNodeContent(&root)
-
+	content := fileContent(schemaFile)
 	schema := p.parseSchemaContent(schemaFile, content, append(files, schemaFile))
 	schema.File = schemaFile
 	schema.Ref = ref
@@ -626,12 +615,7 @@ func (p *parser) parsePathRef(currentFile string, ref string, files []string) (p
 		}
 	}
 
-	var root yaml.Node
-	data := readFile(pathFile)
-	unmarshal(data, &root)
-	dir = fileDir(pathFile)
-	content := rootNodeContent(&root)
-
+	content := fileContent(pathFile)
 	path = p.parsePathFileContent(pathFile, content, append(files, pathFile))
 	path.File = pathFile
 	path.Ref = ref
@@ -675,118 +659,96 @@ func (p *parser) solveSchemaRef(currentFile string, ref string, files []string) 
 
 // parseSchemaContent must contain the
 func (p *parser) parseSchemaContent(currentFile string, content []*yaml.Node, files []string) (schema Schema) {
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		switch v := n.Value; v {
+	for _, v := range mapPairs(content) {
+		switch k := v.key; k {
 		case "$ref":
-			schema.Ref = strings.TrimSpace(assertNextKind(content, &i, yaml.ScalarNode).Value)
-			return p.solveSchemaRef(currentFile, schema.Ref, files)
+			// TODO trims space on values
+			ref := strings.TrimSpace(assertKind(v.node, yaml.ScalarNode).Value)
+			return p.solveSchemaRef(currentFile, ref, files)
 		case "type":
-			schema.Type = assertNextKind(content, &i, yaml.ScalarNode).Value
+			schema.Type = assertKind(v.node, yaml.ScalarNode).Value
 		case "description":
-			schema.Description = assertNextKind(content, &i, yaml.ScalarNode).Value
+			schema.Description = assertKind(v.node, yaml.ScalarNode).Value
 		case "title":
-			schema.Title = assertNextKind(content, &i, yaml.ScalarNode).Value
+			schema.Title = assertKind(v.node, yaml.ScalarNode).Value
 		case "required":
-			schema.Required = captureStringSlice(assertNextKind(content, &i, yaml.SequenceNode).Content)
+			schema.Required = captureStringSlice(assertKind(v.node, yaml.SequenceNode).Content)
 		case "nullable":
-			schema.Nullable = assertBool(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.Nullable = assertBool(assertKind(v.node, yaml.ScalarNode).Value)
 		case "format":
-			schema.Format = assertNextKind(content, &i, yaml.ScalarNode).Value
+			schema.Format = assertKind(v.node, yaml.ScalarNode).Value
 		case "pattern":
-			schema.Pattern = assertNextKind(content, &i, yaml.ScalarNode).Value
+			schema.Pattern = assertKind(v.node, yaml.ScalarNode).Value
 		case "readOnly":
-			schema.ReadOnly = assertBool(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.ReadOnly = assertBool(assertKind(v.node, yaml.ScalarNode).Value)
 		case "writeOnly":
-			schema.WriteOnly = assertBool(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.WriteOnly = assertBool(assertKind(v.node, yaml.ScalarNode).Value)
 		case "minimum":
-			schema.Minimum = assertFloat(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.Minimum = assertFloat(assertKind(v.node, yaml.ScalarNode).Value)
 		case "exclusiveMinimum":
-			schema.ExclusiveMinimum = assertFloat(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.ExclusiveMinimum = assertFloat(assertKind(v.node, yaml.ScalarNode).Value)
 		case "maximum":
-			schema.Maximum = assertFloat(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.Maximum = assertFloat(assertKind(v.node, yaml.ScalarNode).Value)
 		case "exclusiveMaximum":
-			schema.ExclusiveMaximum = assertFloat(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.ExclusiveMaximum = assertFloat(assertKind(v.node, yaml.ScalarNode).Value)
 		case "minItems":
-			schema.MinItems = assertInt(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.MinItems = assertInt(assertKind(v.node, yaml.ScalarNode).Value)
 		case "maxItems":
-			schema.MaxItems = assertInt(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.MaxItems = assertInt(assertKind(v.node, yaml.ScalarNode).Value)
 		case "uniqueItems":
-			schema.UniqueItems = assertBool(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.UniqueItems = assertBool(assertKind(v.node, yaml.ScalarNode).Value)
 		case "minLength":
-			schema.MinLength = assertInt(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.MinLength = assertInt(assertKind(v.node, yaml.ScalarNode).Value)
 		case "maxLength":
-			schema.MaxLength = assertInt(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.MaxLength = assertInt(assertKind(v.node, yaml.ScalarNode).Value)
 		case "minProperties":
-			schema.MinProperties = assertInt(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.MinProperties = assertInt(assertKind(v.node, yaml.ScalarNode).Value)
 		case "maxProperties":
-			schema.MaxProperties = assertInt(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			schema.MaxProperties = assertInt(assertKind(v.node, yaml.ScalarNode).Value)
 		case "enum":
-			schema.Enum = captureStringSlice(assertNextKind(content, &i, yaml.SequenceNode).Content)
+			schema.Enum = captureStringSlice(assertKind(v.node, yaml.SequenceNode).Content)
 		case "x-enum":
-			schema.EnumX = p.parseEnumX(assertNextKind(content, &i, yaml.MappingNode).Content)
+			schema.EnumX = p.parseEnumX(assertKind(v.node, yaml.MappingNode).Content)
 		case "default":
-			schema.Default = captureRaw("default", assertNext(content, &i))
+			schema.Default = captureRaw("default", v.node)
 		case "example":
-			schema.Example = captureRaw("example", assertNext(content, &i))
+			schema.Example = captureRaw("example", v.node)
 		case "properties":
-			schema.Properties = p.parseProperties(currentFile, assertNextKind(content, &i, yaml.MappingNode).Content, files)
+			schema.Properties = p.parseProperties(currentFile, assertKind(v.node, yaml.MappingNode).Content, files)
 		case "items":
-			x := p.parseSchemaContent(currentFile, assertNextKind(content, &i, yaml.MappingNode).Content, files)
+			x := p.parseSchemaContent(currentFile, assertKind(v.node, yaml.MappingNode).Content, files)
 			schema.Items = &x
 		default:
-			panic(fmt.Errorf("unsupported shcema definfintion key %q at %s", v, schema.File))
+			panic(fmt.Errorf("unsupported shcema definfintion key %q at %s", k, schema.File))
 		}
 	}
 	return schema
 }
 
-func (p *parser) parseEnumX(nodes []*yaml.Node) (x EnumX) {
-	x = EnumX{
-		mapOptions: make(map[string]EnumOptionX),
-	}
-	for i := 0; i < len(nodes); i++ {
-		n := nodes[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		key := n.Value
-		next := assertNextKind(nodes, &i, yaml.ScalarNode)
-		opt := EnumOptionX{
-			Key:         key,
-			Description: next.Value,
-		}
-		x.mapOptions[key] = opt
-		x.keys = append(x.keys, key)
+func (p *parser) parseEnumX(content []*yaml.Node) (x EnumX) {
+	for _, v := range mapPairs(content) {
+		assertKind(v.node, yaml.ScalarNode)
+		x.Options = append(x.Options, EnumOptionX{
+			Key:         v.key,
+			Description: v.node.Value,
+		})
 	}
 	return x
 }
 
 func (p *parser) parsePathFileContent(currentFile string, content []*yaml.Node, files []string) (path Path) {
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		method := n.Value
-		next := assertNextKind(content, &i, yaml.MappingNode)
-		e := p.parsePathEndpoint(currentFile, assertContent(next, -1), files)
-		e.Method = method
+	for _, v := range mapPairs(content) {
+		assertKind(v.node, yaml.MappingNode)
+		e := p.parsePathEndpoint(currentFile, v.node.Content, files)
+		e.Method = v.key
 		path.Endpoints = append(path.Endpoints, e)
 	}
 	return path
 }
 
-func (p *parser) parseEndpointParameters(currentFile string, nodes []*yaml.Node) (params []Parameter) {
-	for i := 0; i < len(nodes); i++ {
-		n := nodes[i]
-		if n.Kind != yaml.MappingNode {
-			panic("endpoint parameter should be a map")
-		}
-
+func (p *parser) parseEndpointParameters(currentFile string, content []*yaml.Node) (params []Parameter) {
+	for _, n := range content {
+		assertKind(n, yaml.MappingNode)
 		var param Parameter
 		if err := n.Decode(&param); err != nil {
 			panic(fmt.Errorf("cannot decode path parameter: %v", err))
@@ -833,31 +795,27 @@ func (p *parser) parseEndpointParameters(currentFile string, nodes []*yaml.Node)
 }
 
 func (p *parser) parsePathEndpoint(currentFile string, content []*yaml.Node, files []string) (endpoint Endpoint) {
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		switch v := n.Value; v {
+	for _, v := range mapPairs(content) {
+		switch k := v.key; k {
 		case "summary":
-			endpoint.Summary = assertNextKind(content, &i, yaml.ScalarNode).Value
+			endpoint.Summary = assertKind(v.node, yaml.ScalarNode).Value
 		case "description":
-			endpoint.Description = assertNextKind(content, &i, yaml.ScalarNode).Value
+			endpoint.Description = assertKind(v.node, yaml.ScalarNode).Value
 		case "tags":
-			endpoint.Tags = captureStringSlice(assertNextKind(content, &i, yaml.SequenceNode).Content)
+			endpoint.Tags = captureStringSlice(assertKind(v.node, yaml.SequenceNode).Content)
 		case "operationId":
-			endpoint.OperationID = assertNextKind(content, &i, yaml.ScalarNode).Value
+			endpoint.OperationID = assertKind(v.node, yaml.ScalarNode).Value
 		case "parameters":
-			next := assertNextKind(content, &i, yaml.SequenceNode)
-			endpoint.Parameters = p.parseEndpointParameters(currentFile, assertContent(next, -1))
+			assertKind(v.node, yaml.SequenceNode)
+			endpoint.Parameters = p.parseEndpointParameters(currentFile, v.node.Content)
 		case "responses":
-			next := assertNextKind(content, &i, yaml.MappingNode)
-			endpoint.Responses = p.parsePathResponses(currentFile, assertContent(next, -1), files)
+			assertKind(v.node, yaml.MappingNode)
+			endpoint.Responses = p.parsePathResponses(currentFile, v.node.Content, files)
 		case "requestBody":
-			next := assertNextKind(content, &i, yaml.MappingNode)
-			endpoint.RequestBody = p.parseRequestBody(currentFile, assertContent(next, -1), files)
+			assertKind(v.node, yaml.MappingNode)
+			endpoint.RequestBody = p.parseRequestBody(currentFile, v.node.Content, files)
 		default:
-			panic(fmt.Errorf("unsupported endpoint key %q at %s", v, currentFile))
+			panic(fmt.Errorf("unsupported endpoint key %q at %s", k, currentFile))
 		}
 	}
 
@@ -865,23 +823,21 @@ func (p *parser) parsePathEndpoint(currentFile string, content []*yaml.Node, fil
 }
 
 func (p *parser) parsePathResponses(currentFile string, content []*yaml.Node, files []string) (responses []Response) {
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		status := n.Value
-		next := assertNextKind(content, &i, yaml.MappingNode)
-		var ref reference
-		if err := next.Decode(&ref); err != nil {
+	for _, v := range mapPairs(content) {
+		status := v.key
+		assertKind(v.node, yaml.MappingNode) // TODO create assertMap (helpers in mapPair?)
+		var (
+			ref reference
+			res Response
+		)
+		if err := v.node.Decode(&ref); err != nil {
 			panic(fmt.Errorf("cannot decode path response %w at %s (%s)", err, currentFile, status))
 		}
-		var res Response
 		if ref.Ref != "" {
 			res = p.parseResponseRef(currentFile, ref.Ref, files)
 			res.Ref = ref.Ref
 		} else {
-			res = p.parseResponseContent(currentFile, assertContent(next, -1), files)
+			res = p.parseResponseContent(currentFile, v.node.Content, files)
 		}
 		res.Status = status
 		responses = append(responses, res)
@@ -891,25 +847,21 @@ func (p *parser) parsePathResponses(currentFile string, content []*yaml.Node, fi
 }
 
 func (p *parser) parseRequestBody(currentFile string, content []*yaml.Node, files []string) (body RequestBody) {
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		switch v := n.Value; v {
+	for _, v := range mapPairs(content) {
+		switch k := v.key; k {
 		case "$ref":
 			panic(fmt.Errorf("request body full object reference is not supported at %q", currentFile))
 		case "content":
-			next := assertNextKind(content, &i, yaml.MappingNode)
-			body.Content = p.parseMediaTypes(currentFile, assertContent(next, -1), files)
+			assertKind(v.node, yaml.MappingNode)
+			body.Content = p.parseMediaTypes(currentFile, v.node.Content, files)
 		case "required":
-			body.Required = assertBool(assertNextKind(content, &i, yaml.ScalarNode).Value)
+			body.Required = assertBool(assertKind(v.node, yaml.ScalarNode).Value) // TODO make assertX include type check
 		case "description":
-			body.Description = assertNextKind(content, &i, yaml.ScalarNode).Value
+			body.Description = assertKind(v.node, yaml.ScalarNode).Value
 		case "example":
-			body.Description = assertNextKind(content, &i, yaml.ScalarNode).Value
+			body.Description = assertKind(v.node, yaml.ScalarNode).Value
 		default:
-			panic(fmt.Errorf("unsupported endpoint key %q at %s", v, currentFile))
+			panic(fmt.Errorf("unsupported endpoint key %q at %s", k, currentFile))
 		}
 	}
 	return body
@@ -917,14 +869,10 @@ func (p *parser) parseRequestBody(currentFile string, content []*yaml.Node, file
 
 func (p *parser) parseMediaTypes(currentFile string, content []*yaml.Node, files []string) (mediaTypes map[string]MediaType) {
 	mediaTypes = make(map[string]MediaType)
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		contentType := n.Value
-		next := assertNextKind(content, &i, yaml.MappingNode)
-		mediaType := p.parseMediaType(currentFile, assertContent(next, -1), files)
+	for _, v := range mapPairs(content) {
+		contentType := v.key
+		assertKind(v.node, yaml.MappingNode)
+		mediaType := p.parseMediaType(currentFile, v.node.Content, files)
 		mediaType.File = currentFile
 		mediaTypes[contentType] = mediaType
 	}
@@ -933,21 +881,17 @@ func (p *parser) parseMediaTypes(currentFile string, content []*yaml.Node, files
 }
 
 func (p *parser) parseMediaType(currentFile string, content []*yaml.Node, files []string) (mediaType MediaType) {
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		switch v := n.Value; v {
+	for _, v := range mapPairs(content) {
+		switch k := v.key; k {
 		case "schema":
-			next := assertNextKind(content, &i, yaml.MappingNode)
-			mediaType.Schema = p.parseSchemaContent(currentFile, assertContent(next, -1), files)
+			assertKind(v.node, yaml.MappingNode)
+			mediaType.Schema = p.parseSchemaContent(currentFile, v.node.Content, files)
 		case "example":
-			mediaType.Example = captureRaw("example", assertNext(content, &i))
+			mediaType.Example = captureRaw("example", v.node)
 		case "examples":
-			mediaType.Examples = captureRaw("examples", assertNext(content, &i))
+			mediaType.Examples = captureRaw("examples", v.node)
 		default:
-			panic(fmt.Errorf("unexpected key in a media type map: %s at %s", v, currentFile))
+			panic(fmt.Errorf("unexpected key in a media type map: %s at %s", k, currentFile))
 		}
 	}
 
@@ -955,21 +899,17 @@ func (p *parser) parseMediaType(currentFile string, content []*yaml.Node, files 
 }
 
 func (p *parser) parseResponseContent(currentFile string, content []*yaml.Node, files []string) (response Response) {
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		switch v := n.Value; v {
+	for _, v := range mapPairs(content) {
+		switch k := v.key; k {
 		case "description":
-			response.Description = assertNextKind(content, &i, yaml.ScalarNode).Value
+			response.Description = assertKind(v.node, yaml.ScalarNode).Value
 		case "headers":
 			panic("headers in responses are not supported yet")
 		case "content":
-			next := assertNextKind(content, &i, yaml.MappingNode)
-			response.ContentTypes = p.parseMediaTypes(currentFile, assertContent(next, -1), files)
+			assertKind(v.node, yaml.MappingNode)
+			response.ContentTypes = p.parseMediaTypes(currentFile, v.node.Content, files)
 		default:
-			panic(fmt.Errorf("unsupported response definfintion key %q at %s", v, currentFile))
+			panic(fmt.Errorf("unsupported response definfintion key %q at %s", k, currentFile))
 		}
 	}
 	return response
@@ -977,83 +917,58 @@ func (p *parser) parseResponseContent(currentFile string, content []*yaml.Node, 
 
 func (p *parser) parseResponseContentTypes(currentFile string, content []*yaml.Node, files []string) map[string]*MediaType {
 	ct := make(map[string]*MediaType)
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		contentType := n.Value // application/json
-		next := assertNextKind(content, &i, yaml.MappingNode)
-		nodes := assertContent(next, -1)
-
-		ct[contentType] = &MediaType{}
-		for j := 0; j < len(nodes); j++ {
-			nn := nodes[j]
-			if nn.Kind != yaml.ScalarNode {
-				continue
-			}
-			switch v := nn.Value; v {
-			case "schema":
-				next = assertNextKind(nodes, &j, yaml.MappingNode)
-				p.parseSchemaContent(currentFile, assertContent(next, -1), files)
-			case "example":
-				ct[contentType].Example = captureRaw("example", assertNext(nodes, &j))
-			case "examples":
-				ct[contentType].Examples = captureRaw("examples", assertNext(nodes, &j))
-			}
-		}
+	for _, v := range mapPairs(content) {
+		contentType := v.key // application/json
+		assertKind(v.node, yaml.MappingNode)
+		mt := p.parseMediaType(currentFile, v.node.Content, files)
+		ct[contentType] = &mt
 	}
 	return ct
 }
 
 func (p *parser) parseProperties(currentFile string, content []*yaml.Node, files []string) (props []Schema) {
-	for i := 0; i < len(content); i++ {
-		n := content[i]
-		if n.Kind != yaml.ScalarNode {
-			continue
-		}
-		key := n.Value
-		next := assertNextKind(content, &i, yaml.MappingNode)
-
-		schema := p.parseSchemaContent(currentFile, next.Content, files)
+	for _, v := range mapPairs(content) {
+		assertKind(v.node, yaml.MappingNode)
+		schema := p.parseSchemaContent(currentFile, v.node.Content, files)
 		schema.File = currentFile
-		schema.Key = key
+		schema.Key = v.key
 		props = append(props, schema)
 	}
 	return props
 }
 
 func captureContent(content []*yaml.Node, capture map[string]yaml.Kind) map[string][]*yaml.Node {
-	length := len(content)
 	found := make(map[string][]*yaml.Node)
-
-	for i := 0; i < length; i++ {
-		c := content[i]
-		if c.Kind != yaml.ScalarNode {
-			continue
-		}
-		if wantKind, ok := capture[c.Value]; ok {
-			next := assertNextKind(content, &i, wantKind)
-			found[c.Value] = next.Content
-			delete(capture, c.Value)
+	for _, v := range mapPairs(content) {
+		if wantKind, ok := capture[v.key]; ok {
+			assertKind(v.node, wantKind)
+			found[v.key] = v.node.Content
+			delete(capture, v.key)
 		}
 	}
 	return found
 }
 
-func assertNext(nodes []*yaml.Node, cursor *int) (next *yaml.Node) {
-	*cursor++
-	if *cursor >= len(nodes) {
-		panic(errors.New("expected next node"))
+func captureContent2(content []*yaml.Node, required captureMap, optional captureMap) {
+	for _, v := range mapPairs(content) {
+		if fx, ok := required[v.key]; ok {
+			fx(v.node)
+			delete(required, v.key)
+			continue
+		}
+		if fx, ok := optional[v.key]; ok {
+			fx(v.node)
+			delete(optional, v.key)
+			continue
+		}
 	}
-	next = nodes[*cursor]
-	return next
-}
-
-func assertNextKind(nodes []*yaml.Node, cursor *int, want yaml.Kind) (next *yaml.Node) {
-	next = assertNext(nodes, cursor)
-	assertKind(next, want)
-	return next
+	var missing []string
+	for key := range required {
+		missing = append(missing, key)
+	}
+	if len(missing) > 0 {
+		panic(fmt.Errorf("missing required keys: %v", missing))
+	}
 }
 
 func assertNodeDecode(node *yaml.Node, v interface{}) {
@@ -1062,10 +977,22 @@ func assertNodeDecode(node *yaml.Node, v interface{}) {
 	}
 }
 
-func assertKind(node *yaml.Node, want yaml.Kind) {
+func assertKind(node *yaml.Node, want yaml.Kind) *yaml.Node {
 	if got := node.Kind; got != want {
 		panic(fmt.Errorf("expected node kind %q, got %q", want, got))
 	}
+	return node
+}
+
+func assertScalar(node *yaml.Node) *yaml.Node {
+	if got := node.Kind; got != yaml.ScalarNode {
+		panic(fmt.Errorf("expected node kind %q, got %q", yaml.ScalarNode, got))
+	}
+	return node
+}
+
+func assertString(node *yaml.Node) string {
+	return assertScalar(node).Value
 }
 
 func assertContent(node *yaml.Node, want int) []*yaml.Node {
@@ -1079,13 +1006,10 @@ func unmarshalFile(file string, v interface{}) {
 	unmarshal(readFile(file), v)
 }
 
-func fileDir(file string) string {
-	abs, err := filepath.Abs(file)
-	if err != nil {
-		panic(fmt.Errorf("cannot detect absolute path %q: %w", file, err))
-	}
-	dir, _ := filepath.Split(abs)
-	return dir
+func fileContent(file string) []*yaml.Node {
+	var root yaml.Node
+	unmarshal(readFile(file), &root)
+	return rootNodeContent(&root)
 }
 
 func unmarshal(data []byte, v interface{}) {
@@ -1143,4 +1067,31 @@ func absolutePath(file string) string {
 		panic(fmt.Errorf("cannot detect file absolute path %q: %v", file, err))
 	}
 	return abs
+}
+
+type mapPair struct {
+	key  string
+	node *yaml.Node
+}
+
+func mapPairs(nodes []*yaml.Node) []mapPair {
+	length := len(nodes)
+	if math.Mod(float64(length), 2) != 0 {
+		panic(fmt.Errorf("asked for pairs on an off number of nodes: %d", length))
+	}
+	pairs := make([]mapPair, length/2)
+	for i, j := 0, 1; j < length; i, j = i+2, j+2 {
+		var (
+			key   = nodes[i]
+			value = nodes[j]
+		)
+		if key.Kind != yaml.ScalarNode {
+			panic(fmt.Errorf("first element of a map pair should be an scalar, got: %v", key.Kind))
+		}
+		pairs[i/2] = mapPair{
+			key:  key.Value,
+			node: value,
+		}
+	}
+	return pairs
 }
