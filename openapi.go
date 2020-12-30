@@ -663,13 +663,14 @@ func (p *parser) solveSchemaRef(currentFile string, ref string, files []string) 
 		panic(fmt.Errorf("only local references to root component schemas are supported, got: %q", ref))
 	}
 
-	if x, ok := p.schemasParsed[file]; ok {
+	name := ref[21:]
+	if x, ok := p.schemas[name]; ok {
 		return x
 	}
 
 	// we may have a reference to a component that has not been
 	// parsed yet...
-	return Schema{solve: ref[21:]}
+	return Schema{solve: name}
 }
 
 // parseSchemaContent must contain the
