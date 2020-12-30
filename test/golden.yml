@@ -13,7 +13,6 @@ servers:
       description: Production server
 paths:
     - key: /v1/schools
-      file: $PWD/api/spec/resources/schools.yml
       $ref: resources/schools.yml
       endpoints:
         - method: get
@@ -44,17 +43,14 @@ paths:
                 List of **School** resources.
               content:
                 application/json:
-                    file: $PWD/api/spec/resources/schools.yml
                     schema:
                         type: object
                         required:
                             - data
                         properties:
                             - key: data
-                              file: $PWD/api/spec/resources/schools.yml
                               type: array
                               items:
-                                file: $PWD/api/spec/schemas/school.yml
                                 name: School
                                 $ref: schemas/school.yml
                                 type: object
@@ -68,16 +64,12 @@ paths:
                                     - modality
                                 properties:
                                     - key: id
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: Unique ID of the office (UUID v4).
                                       format: uuid
                                       pattern: ^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$
                                       readOnly: true
                                     - key: code
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: |
                                         Unique code of the school (URL safe).
@@ -87,8 +79,6 @@ paths:
                                       example: |
                                         ru-moscow-101
                                     - key: name
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: |
                                         Name of the school
@@ -100,8 +90,6 @@ paths:
                                       example: |
                                         Moscow's International Business School - "Center"
                                     - key: contacts
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: array
                                       description: Contact persons list.
                                       minItems: 1
@@ -112,35 +100,25 @@ paths:
                                             - email
                                         properties:
                                             - key: email
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: string
                                               description: Contact email.
                                               format: email
                                             - key: position
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: string
                                               description: Contact person's position.
                                               example: |
                                                 Main office secretary.
                                             - key: name
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: string
                                               description: Contact person's name.
                                               example: |
                                                 John doe
                                             - key: priority
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: string
                                               enum:
                                                 - Primary
                                                 - Secondary
                                             - key: phone
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: array
                                               description: Phone numbers.
                                               minItems: 1
@@ -150,9 +128,8 @@ paths:
                                                 example: |
                                                     (555)-1234566789
                                     - key: main_office
-                                      file: $PWD/api/spec/schemas/address.yml
                                       name: Address
-                                      $ref: ../schemas/address.yml
+                                      $ref: schemas/address.yml
                                       type: object
                                       description: Physical address
                                       required:
@@ -161,36 +138,26 @@ paths:
                                         - country
                                       properties:
                                         - key: street
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: string
                                           description: Name of the street.
                                           example: |
                                             Krylatskaya Ulitsa
                                         - key: number
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: integer
                                           description: Street number.
                                           example: |
                                             22
                                         - key: area-code
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: string
                                           description: Code of the area.
                                           example: |
                                             FRS12-188
                                         - key: city
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: string
                                           description: Name of the city.
                                           example: |
                                             Moscow
                                         - key: country
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: string
                                           description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                                           pattern: ^[A-Z]{3}$
@@ -199,15 +166,12 @@ paths:
                                           example: |
                                             RUS
                                     - key: campus
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: array
                                       description: Campus locations.
                                       minItems: 1
                                       items:
-                                        file: $PWD/api/spec/schemas/address.yml
                                         name: Address
-                                        $ref: ../schemas/address.yml
+                                        $ref: schemas/address.yml
                                         type: object
                                         description: Physical address
                                         required:
@@ -216,36 +180,26 @@ paths:
                                             - country
                                         properties:
                                             - key: street
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: string
                                               description: Name of the street.
                                               example: |
                                                 Krylatskaya Ulitsa
                                             - key: number
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: integer
                                               description: Street number.
                                               example: |
                                                 22
                                             - key: area-code
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: string
                                               description: Code of the area.
                                               example: |
                                                 FRS12-188
                                             - key: city
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: string
                                               description: Name of the city.
                                               example: |
                                                 Moscow
                                             - key: country
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: string
                                               description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                                               pattern: ^[A-Z]{3}$
@@ -253,16 +207,17 @@ paths:
                                               maximum: 3
                                               example: |
                                                 RUS
+                                    - key: embed
+                                      type: string
+                                      description: Example of an anonymous embeddable schema.
+                                      example: |
+                                        embedded
                                     - key: foundation_year
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: integer
                                       description: Year of foundation.
                                       example: |
                                         1983
                                     - key: modality
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: The school education mode.
                                       enum:
@@ -278,24 +233,18 @@ paths:
                                             - title: Mixed
                                               description: public and private.
                                     - key: open
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: boolean
                                       description: |
                                         Indicates whether the schools is accepting new students.
                                       example: |
                                         true
                                     - key: createdAt
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: |
                                         The date where the record was created.
                                       format: date-time
                                       readOnly: true
                                     - key: updatedAt
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: |
                                         The last time the record was updated.
@@ -303,15 +252,12 @@ paths:
                                       format: date-time
                                       readOnly: true
             - $ref: ../responses/errors/401.yml
-              file: $PWD/api/spec/responses/errors/401.yml
               status: "401"
               description: |
                 Unauthorized - Invalid authorization credentials.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/401.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -320,28 +266,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "401"
                         message: "Unauthorized."
             - $ref: ../responses/errors/403.yml
-              file: $PWD/api/spec/responses/errors/403.yml
               status: "403"
               description: |
                 Forbidden - The caller does not have access to this resource.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/403.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -350,28 +289,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "403"
                         message: "Forbidden."
             - $ref: ../responses/errors/404.yml
-              file: $PWD/api/spec/responses/errors/404.yml
               status: "404"
               description: |
                 Not Found - The resource does not exists.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/404.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -380,28 +312,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "404"
                         message: "Not found."
             - $ref: ../responses/errors/405.yml
-              file: $PWD/api/spec/responses/errors/405.yml
               status: "405"
               description: |
                 Method Not Allowed - The method is not allowed for this resource.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/405.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -410,28 +335,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "405"
                         message: "Method Not Allowed."
             - $ref: ../responses/errors/500.yml
-              file: $PWD/api/spec/responses/errors/500.yml
               status: "500"
               description: |
                 Internal Server Error - There has been an unexpected error processing the request.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/500.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -440,28 +358,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "500"
                         message: "Internal server error."
             - $ref: ../responses/errors/503.yml
-              file: $PWD/api/spec/responses/errors/503.yml
               status: "503"
               description: |
                 Service Unavailable - The service is unavailable.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/503.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -470,13 +381,9 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
@@ -493,9 +400,7 @@ paths:
             required: true
             content:
                 application/json:
-                    file: $PWD/api/spec/resources/schools.yml
                     schema:
-                        file: $PWD/api/spec/schemas/school.yml
                         name: School
                         $ref: schemas/school.yml
                         type: object
@@ -509,16 +414,12 @@ paths:
                             - modality
                         properties:
                             - key: id
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: Unique ID of the office (UUID v4).
                               format: uuid
                               pattern: ^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$
                               readOnly: true
                             - key: code
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: |
                                 Unique code of the school (URL safe).
@@ -528,8 +429,6 @@ paths:
                               example: |
                                 ru-moscow-101
                             - key: name
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: |
                                 Name of the school
@@ -541,8 +440,6 @@ paths:
                               example: |
                                 Moscow's International Business School - "Center"
                             - key: contacts
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: array
                               description: Contact persons list.
                               minItems: 1
@@ -553,35 +450,25 @@ paths:
                                     - email
                                 properties:
                                     - key: email
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: Contact email.
                                       format: email
                                     - key: position
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: Contact person's position.
                                       example: |
                                         Main office secretary.
                                     - key: name
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: Contact person's name.
                                       example: |
                                         John doe
                                     - key: priority
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       enum:
                                         - Primary
                                         - Secondary
                                     - key: phone
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: array
                                       description: Phone numbers.
                                       minItems: 1
@@ -591,9 +478,8 @@ paths:
                                         example: |
                                             (555)-1234566789
                             - key: main_office
-                              file: $PWD/api/spec/schemas/address.yml
                               name: Address
-                              $ref: ../schemas/address.yml
+                              $ref: schemas/address.yml
                               type: object
                               description: Physical address
                               required:
@@ -602,36 +488,26 @@ paths:
                                 - country
                               properties:
                                 - key: street
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: string
                                   description: Name of the street.
                                   example: |
                                     Krylatskaya Ulitsa
                                 - key: number
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: integer
                                   description: Street number.
                                   example: |
                                     22
                                 - key: area-code
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: string
                                   description: Code of the area.
                                   example: |
                                     FRS12-188
                                 - key: city
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: string
                                   description: Name of the city.
                                   example: |
                                     Moscow
                                 - key: country
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: string
                                   description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                                   pattern: ^[A-Z]{3}$
@@ -640,15 +516,12 @@ paths:
                                   example: |
                                     RUS
                             - key: campus
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: array
                               description: Campus locations.
                               minItems: 1
                               items:
-                                file: $PWD/api/spec/schemas/address.yml
                                 name: Address
-                                $ref: ../schemas/address.yml
+                                $ref: schemas/address.yml
                                 type: object
                                 description: Physical address
                                 required:
@@ -657,36 +530,26 @@ paths:
                                     - country
                                 properties:
                                     - key: street
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: string
                                       description: Name of the street.
                                       example: |
                                         Krylatskaya Ulitsa
                                     - key: number
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: integer
                                       description: Street number.
                                       example: |
                                         22
                                     - key: area-code
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: string
                                       description: Code of the area.
                                       example: |
                                         FRS12-188
                                     - key: city
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: string
                                       description: Name of the city.
                                       example: |
                                         Moscow
                                     - key: country
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: string
                                       description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                                       pattern: ^[A-Z]{3}$
@@ -694,16 +557,17 @@ paths:
                                       maximum: 3
                                       example: |
                                         RUS
+                            - key: embed
+                              type: string
+                              description: Example of an anonymous embeddable schema.
+                              example: |
+                                embedded
                             - key: foundation_year
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: integer
                               description: Year of foundation.
                               example: |
                                 1983
                             - key: modality
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: The school education mode.
                               enum:
@@ -719,24 +583,18 @@ paths:
                                     - title: Mixed
                                       description: public and private.
                             - key: open
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: boolean
                               description: |
                                 Indicates whether the schools is accepting new students.
                               example: |
                                 true
                             - key: createdAt
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: |
                                 The date where the record was created.
                               format: date-time
                               readOnly: true
                             - key: updatedAt
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: |
                                 The last time the record was updated.
@@ -749,17 +607,14 @@ paths:
                 List of **School** resources.
               content:
                 application/json:
-                    file: $PWD/api/spec/resources/schools.yml
                     schema:
                         type: object
                         required:
                             - data
                         properties:
                             - key: data
-                              file: $PWD/api/spec/resources/schools.yml
                               type: array
                               items:
-                                file: $PWD/api/spec/schemas/school.yml
                                 name: School
                                 $ref: schemas/school.yml
                                 type: object
@@ -773,16 +628,12 @@ paths:
                                     - modality
                                 properties:
                                     - key: id
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: Unique ID of the office (UUID v4).
                                       format: uuid
                                       pattern: ^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$
                                       readOnly: true
                                     - key: code
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: |
                                         Unique code of the school (URL safe).
@@ -792,8 +643,6 @@ paths:
                                       example: |
                                         ru-moscow-101
                                     - key: name
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: |
                                         Name of the school
@@ -805,8 +654,6 @@ paths:
                                       example: |
                                         Moscow's International Business School - "Center"
                                     - key: contacts
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: array
                                       description: Contact persons list.
                                       minItems: 1
@@ -817,35 +664,25 @@ paths:
                                             - email
                                         properties:
                                             - key: email
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: string
                                               description: Contact email.
                                               format: email
                                             - key: position
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: string
                                               description: Contact person's position.
                                               example: |
                                                 Main office secretary.
                                             - key: name
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: string
                                               description: Contact person's name.
                                               example: |
                                                 John doe
                                             - key: priority
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: string
                                               enum:
                                                 - Primary
                                                 - Secondary
                                             - key: phone
-                                              file: $PWD/api/spec/schemas/school.yml
-                                              name: School
                                               type: array
                                               description: Phone numbers.
                                               minItems: 1
@@ -855,9 +692,8 @@ paths:
                                                 example: |
                                                     (555)-1234566789
                                     - key: main_office
-                                      file: $PWD/api/spec/schemas/address.yml
                                       name: Address
-                                      $ref: ../schemas/address.yml
+                                      $ref: schemas/address.yml
                                       type: object
                                       description: Physical address
                                       required:
@@ -866,36 +702,26 @@ paths:
                                         - country
                                       properties:
                                         - key: street
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: string
                                           description: Name of the street.
                                           example: |
                                             Krylatskaya Ulitsa
                                         - key: number
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: integer
                                           description: Street number.
                                           example: |
                                             22
                                         - key: area-code
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: string
                                           description: Code of the area.
                                           example: |
                                             FRS12-188
                                         - key: city
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: string
                                           description: Name of the city.
                                           example: |
                                             Moscow
                                         - key: country
-                                          file: $PWD/api/spec/schemas/address.yml
-                                          name: Address
                                           type: string
                                           description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                                           pattern: ^[A-Z]{3}$
@@ -904,15 +730,12 @@ paths:
                                           example: |
                                             RUS
                                     - key: campus
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: array
                                       description: Campus locations.
                                       minItems: 1
                                       items:
-                                        file: $PWD/api/spec/schemas/address.yml
                                         name: Address
-                                        $ref: ../schemas/address.yml
+                                        $ref: schemas/address.yml
                                         type: object
                                         description: Physical address
                                         required:
@@ -921,36 +744,26 @@ paths:
                                             - country
                                         properties:
                                             - key: street
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: string
                                               description: Name of the street.
                                               example: |
                                                 Krylatskaya Ulitsa
                                             - key: number
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: integer
                                               description: Street number.
                                               example: |
                                                 22
                                             - key: area-code
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: string
                                               description: Code of the area.
                                               example: |
                                                 FRS12-188
                                             - key: city
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: string
                                               description: Name of the city.
                                               example: |
                                                 Moscow
                                             - key: country
-                                              file: $PWD/api/spec/schemas/address.yml
-                                              name: Address
                                               type: string
                                               description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                                               pattern: ^[A-Z]{3}$
@@ -958,16 +771,17 @@ paths:
                                               maximum: 3
                                               example: |
                                                 RUS
+                                    - key: embed
+                                      type: string
+                                      description: Example of an anonymous embeddable schema.
+                                      example: |
+                                        embedded
                                     - key: foundation_year
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: integer
                                       description: Year of foundation.
                                       example: |
                                         1983
                                     - key: modality
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: The school education mode.
                                       enum:
@@ -983,24 +797,18 @@ paths:
                                             - title: Mixed
                                               description: public and private.
                                     - key: open
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: boolean
                                       description: |
                                         Indicates whether the schools is accepting new students.
                                       example: |
                                         true
                                     - key: createdAt
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: |
                                         The date where the record was created.
                                       format: date-time
                                       readOnly: true
                                     - key: updatedAt
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: |
                                         The last time the record was updated.
@@ -1008,15 +816,12 @@ paths:
                                       format: date-time
                                       readOnly: true
             - $ref: ../responses/errors/400.yml
-              file: $PWD/api/spec/responses/errors/400.yml
               status: "400"
               description: |
                 Bad request - The request cannot be processed
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/400.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1025,28 +830,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "400"
                         message: "Bad request."
             - $ref: ../responses/errors/401.yml
-              file: $PWD/api/spec/responses/errors/401.yml
               status: "401"
               description: |
                 Unauthorized - Invalid authorization credentials.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/401.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1055,28 +853,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "401"
                         message: "Unauthorized."
             - $ref: ../responses/errors/403.yml
-              file: $PWD/api/spec/responses/errors/403.yml
               status: "403"
               description: |
                 Forbidden - The caller does not have access to this resource.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/403.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1085,28 +876,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "403"
                         message: "Forbidden."
             - $ref: ../responses/errors/404.yml
-              file: $PWD/api/spec/responses/errors/404.yml
               status: "404"
               description: |
                 Not Found - The resource does not exists.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/404.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1115,28 +899,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "404"
                         message: "Not found."
             - $ref: ../responses/errors/405.yml
-              file: $PWD/api/spec/responses/errors/405.yml
               status: "405"
               description: |
                 Method Not Allowed - The method is not allowed for this resource.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/405.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1145,28 +922,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "405"
                         message: "Method Not Allowed."
             - $ref: ../responses/errors/422.yml
-              file: $PWD/api/spec/responses/errors/422.yml
               status: "422"
               description: |
                 Unprocessable Entity - The payload syntax is valid but there is a logic error.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/422.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1175,28 +945,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "422"
                         message: "Unprocessable Entity."
             - $ref: ../responses/errors/500.yml
-              file: $PWD/api/spec/responses/errors/500.yml
               status: "500"
               description: |
                 Internal Server Error - There has been an unexpected error processing the request.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/500.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1205,28 +968,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "500"
                         message: "Internal server error."
             - $ref: ../responses/errors/503.yml
-              file: $PWD/api/spec/responses/errors/503.yml
               status: "503"
               description: |
                 Service Unavailable - The service is unavailable.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/503.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1235,20 +991,15 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "503"
                         message: "Service Unavailable."
     - key: /v1/schools/{uuid}
-      file: $PWD/api/spec/resources/schools-{uuid}.yml
       $ref: resources/schools-{uuid}.yml
       endpoints:
         - method: get
@@ -1272,9 +1023,7 @@ paths:
                 **School** resource.
               content:
                 application/json:
-                    file: $PWD/api/spec/resources/schools-{uuid}.yml
                     schema:
-                        file: $PWD/api/spec/schemas/school.yml
                         name: School
                         $ref: schemas/school.yml
                         type: object
@@ -1288,16 +1037,12 @@ paths:
                             - modality
                         properties:
                             - key: id
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: Unique ID of the office (UUID v4).
                               format: uuid
                               pattern: ^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$
                               readOnly: true
                             - key: code
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: |
                                 Unique code of the school (URL safe).
@@ -1307,8 +1052,6 @@ paths:
                               example: |
                                 ru-moscow-101
                             - key: name
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: |
                                 Name of the school
@@ -1320,8 +1063,6 @@ paths:
                               example: |
                                 Moscow's International Business School - "Center"
                             - key: contacts
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: array
                               description: Contact persons list.
                               minItems: 1
@@ -1332,35 +1073,25 @@ paths:
                                     - email
                                 properties:
                                     - key: email
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: Contact email.
                                       format: email
                                     - key: position
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: Contact person's position.
                                       example: |
                                         Main office secretary.
                                     - key: name
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       description: Contact person's name.
                                       example: |
                                         John doe
                                     - key: priority
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: string
                                       enum:
                                         - Primary
                                         - Secondary
                                     - key: phone
-                                      file: $PWD/api/spec/schemas/school.yml
-                                      name: School
                                       type: array
                                       description: Phone numbers.
                                       minItems: 1
@@ -1370,9 +1101,8 @@ paths:
                                         example: |
                                             (555)-1234566789
                             - key: main_office
-                              file: $PWD/api/spec/schemas/address.yml
                               name: Address
-                              $ref: ../schemas/address.yml
+                              $ref: schemas/address.yml
                               type: object
                               description: Physical address
                               required:
@@ -1381,36 +1111,26 @@ paths:
                                 - country
                               properties:
                                 - key: street
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: string
                                   description: Name of the street.
                                   example: |
                                     Krylatskaya Ulitsa
                                 - key: number
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: integer
                                   description: Street number.
                                   example: |
                                     22
                                 - key: area-code
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: string
                                   description: Code of the area.
                                   example: |
                                     FRS12-188
                                 - key: city
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: string
                                   description: Name of the city.
                                   example: |
                                     Moscow
                                 - key: country
-                                  file: $PWD/api/spec/schemas/address.yml
-                                  name: Address
                                   type: string
                                   description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                                   pattern: ^[A-Z]{3}$
@@ -1419,15 +1139,12 @@ paths:
                                   example: |
                                     RUS
                             - key: campus
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: array
                               description: Campus locations.
                               minItems: 1
                               items:
-                                file: $PWD/api/spec/schemas/address.yml
                                 name: Address
-                                $ref: ../schemas/address.yml
+                                $ref: schemas/address.yml
                                 type: object
                                 description: Physical address
                                 required:
@@ -1436,36 +1153,26 @@ paths:
                                     - country
                                 properties:
                                     - key: street
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: string
                                       description: Name of the street.
                                       example: |
                                         Krylatskaya Ulitsa
                                     - key: number
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: integer
                                       description: Street number.
                                       example: |
                                         22
                                     - key: area-code
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: string
                                       description: Code of the area.
                                       example: |
                                         FRS12-188
                                     - key: city
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: string
                                       description: Name of the city.
                                       example: |
                                         Moscow
                                     - key: country
-                                      file: $PWD/api/spec/schemas/address.yml
-                                      name: Address
                                       type: string
                                       description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                                       pattern: ^[A-Z]{3}$
@@ -1473,16 +1180,17 @@ paths:
                                       maximum: 3
                                       example: |
                                         RUS
+                            - key: embed
+                              type: string
+                              description: Example of an anonymous embeddable schema.
+                              example: |
+                                embedded
                             - key: foundation_year
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: integer
                               description: Year of foundation.
                               example: |
                                 1983
                             - key: modality
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: The school education mode.
                               enum:
@@ -1498,24 +1206,18 @@ paths:
                                     - title: Mixed
                                       description: public and private.
                             - key: open
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: boolean
                               description: |
                                 Indicates whether the schools is accepting new students.
                               example: |
                                 true
                             - key: createdAt
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: |
                                 The date where the record was created.
                               format: date-time
                               readOnly: true
                             - key: updatedAt
-                              file: $PWD/api/spec/schemas/school.yml
-                              name: School
                               type: string
                               description: |
                                 The last time the record was updated.
@@ -1523,15 +1225,12 @@ paths:
                               format: date-time
                               readOnly: true
             - $ref: ../responses/errors/401.yml
-              file: $PWD/api/spec/responses/errors/401.yml
               status: "401"
               description: |
                 Unauthorized - Invalid authorization credentials.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/401.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1540,28 +1239,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "401"
                         message: "Unauthorized."
             - $ref: ../responses/errors/403.yml
-              file: $PWD/api/spec/responses/errors/403.yml
               status: "403"
               description: |
                 Forbidden - The caller does not have access to this resource.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/403.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1570,28 +1262,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "403"
                         message: "Forbidden."
             - $ref: ../responses/errors/404.yml
-              file: $PWD/api/spec/responses/errors/404.yml
               status: "404"
               description: |
                 Not Found - The resource does not exists.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/404.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1600,28 +1285,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "404"
                         message: "Not found."
             - $ref: ../responses/errors/405.yml
-              file: $PWD/api/spec/responses/errors/405.yml
               status: "405"
               description: |
                 Method Not Allowed - The method is not allowed for this resource.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/405.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1630,28 +1308,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "405"
                         message: "Method Not Allowed."
             - $ref: ../responses/errors/500.yml
-              file: $PWD/api/spec/responses/errors/500.yml
               status: "500"
               description: |
                 Internal Server Error - There has been an unexpected error processing the request.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/500.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1660,28 +1331,21 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "500"
                         message: "Internal server error."
             - $ref: ../responses/errors/503.yml
-              file: $PWD/api/spec/responses/errors/503.yml
               status: "503"
               description: |
                 Service Unavailable - The service is unavailable.
               content:
                 application/json:
-                    file: $PWD/api/spec/responses/errors/503.yml
                     schema:
-                        file: $PWD/api/spec/schemas/error.yml
                         name: Error
                         $ref: schemas/error.yml
                         type: object
@@ -1690,21 +1354,16 @@ paths:
                             - message
                         properties:
                             - key: code
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Unique error code identifier.
                             - key: message
-                              file: $PWD/api/spec/schemas/error.yml
-                              name: Error
                               type: string
                               description: Error message.
                     example: |
                         code: "503"
                         message: "Service Unavailable."
 schemas:
-    - file: $PWD/api/spec/schemas/school.yml
-      name: School
+    - name: School
       $ref: schemas/school.yml
       type: object
       description: Information about a school.
@@ -1717,16 +1376,12 @@ schemas:
         - modality
       properties:
         - key: id
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: string
           description: Unique ID of the office (UUID v4).
           format: uuid
           pattern: ^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$
           readOnly: true
         - key: code
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: string
           description: |
             Unique code of the school (URL safe).
@@ -1736,8 +1391,6 @@ schemas:
           example: |
             ru-moscow-101
         - key: name
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: string
           description: |
             Name of the school
@@ -1749,8 +1402,6 @@ schemas:
           example: |
             Moscow's International Business School - "Center"
         - key: contacts
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: array
           description: Contact persons list.
           minItems: 1
@@ -1761,35 +1412,25 @@ schemas:
                 - email
             properties:
                 - key: email
-                  file: $PWD/api/spec/schemas/school.yml
-                  name: School
                   type: string
                   description: Contact email.
                   format: email
                 - key: position
-                  file: $PWD/api/spec/schemas/school.yml
-                  name: School
                   type: string
                   description: Contact person's position.
                   example: |
                     Main office secretary.
                 - key: name
-                  file: $PWD/api/spec/schemas/school.yml
-                  name: School
                   type: string
                   description: Contact person's name.
                   example: |
                     John doe
                 - key: priority
-                  file: $PWD/api/spec/schemas/school.yml
-                  name: School
                   type: string
                   enum:
                     - Primary
                     - Secondary
                 - key: phone
-                  file: $PWD/api/spec/schemas/school.yml
-                  name: School
                   type: array
                   description: Phone numbers.
                   minItems: 1
@@ -1799,9 +1440,8 @@ schemas:
                     example: |
                         (555)-1234566789
         - key: main_office
-          file: $PWD/api/spec/schemas/address.yml
           name: Address
-          $ref: ../schemas/address.yml
+          $ref: schemas/address.yml
           type: object
           description: Physical address
           required:
@@ -1810,36 +1450,26 @@ schemas:
             - country
           properties:
             - key: street
-              file: $PWD/api/spec/schemas/address.yml
-              name: Address
               type: string
               description: Name of the street.
               example: |
                 Krylatskaya Ulitsa
             - key: number
-              file: $PWD/api/spec/schemas/address.yml
-              name: Address
               type: integer
               description: Street number.
               example: |
                 22
             - key: area-code
-              file: $PWD/api/spec/schemas/address.yml
-              name: Address
               type: string
               description: Code of the area.
               example: |
                 FRS12-188
             - key: city
-              file: $PWD/api/spec/schemas/address.yml
-              name: Address
               type: string
               description: Name of the city.
               example: |
                 Moscow
             - key: country
-              file: $PWD/api/spec/schemas/address.yml
-              name: Address
               type: string
               description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
               pattern: ^[A-Z]{3}$
@@ -1848,15 +1478,12 @@ schemas:
               example: |
                 RUS
         - key: campus
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: array
           description: Campus locations.
           minItems: 1
           items:
-            file: $PWD/api/spec/schemas/address.yml
             name: Address
-            $ref: ../schemas/address.yml
+            $ref: schemas/address.yml
             type: object
             description: Physical address
             required:
@@ -1865,36 +1492,26 @@ schemas:
                 - country
             properties:
                 - key: street
-                  file: $PWD/api/spec/schemas/address.yml
-                  name: Address
                   type: string
                   description: Name of the street.
                   example: |
                     Krylatskaya Ulitsa
                 - key: number
-                  file: $PWD/api/spec/schemas/address.yml
-                  name: Address
                   type: integer
                   description: Street number.
                   example: |
                     22
                 - key: area-code
-                  file: $PWD/api/spec/schemas/address.yml
-                  name: Address
                   type: string
                   description: Code of the area.
                   example: |
                     FRS12-188
                 - key: city
-                  file: $PWD/api/spec/schemas/address.yml
-                  name: Address
                   type: string
                   description: Name of the city.
                   example: |
                     Moscow
                 - key: country
-                  file: $PWD/api/spec/schemas/address.yml
-                  name: Address
                   type: string
                   description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
                   pattern: ^[A-Z]{3}$
@@ -1902,16 +1519,17 @@ schemas:
                   maximum: 3
                   example: |
                     RUS
+        - key: embed
+          type: string
+          description: Example of an anonymous embeddable schema.
+          example: |
+            embedded
         - key: foundation_year
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: integer
           description: Year of foundation.
           example: |
             1983
         - key: modality
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: string
           description: The school education mode.
           enum:
@@ -1927,33 +1545,26 @@ schemas:
                 - title: Mixed
                   description: public and private.
         - key: open
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: boolean
           description: |
             Indicates whether the schools is accepting new students.
           example: |
             true
         - key: createdAt
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: string
           description: |
             The date where the record was created.
           format: date-time
           readOnly: true
         - key: updatedAt
-          file: $PWD/api/spec/schemas/school.yml
-          name: School
           type: string
           description: |
             The last time the record was updated.
           Nullable: true
           format: date-time
           readOnly: true
-    - file: $PWD/api/spec/schemas/address.yml
-      name: Address
-      $ref: ../schemas/address.yml
+    - name: Address
+      $ref: schemas/address.yml
       type: object
       description: Physical address
       required:
@@ -1962,36 +1573,26 @@ schemas:
         - country
       properties:
         - key: street
-          file: $PWD/api/spec/schemas/address.yml
-          name: Address
           type: string
           description: Name of the street.
           example: |
             Krylatskaya Ulitsa
         - key: number
-          file: $PWD/api/spec/schemas/address.yml
-          name: Address
           type: integer
           description: Street number.
           example: |
             22
         - key: area-code
-          file: $PWD/api/spec/schemas/address.yml
-          name: Address
           type: string
           description: Code of the area.
           example: |
             FRS12-188
         - key: city
-          file: $PWD/api/spec/schemas/address.yml
-          name: Address
           type: string
           description: Name of the city.
           example: |
             Moscow
         - key: country
-          file: $PWD/api/spec/schemas/address.yml
-          name: Address
           type: string
           description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
           pattern: ^[A-Z]{3}$
@@ -1999,8 +1600,7 @@ schemas:
           maximum: 3
           example: |
             RUS
-    - file: $PWD/api/spec/schemas/error.yml
-      name: Error
+    - name: Error
       $ref: schemas/error.yml
       type: object
       required:
@@ -2008,13 +1608,24 @@ schemas:
         - message
       properties:
         - key: code
-          file: $PWD/api/spec/schemas/error.yml
-          name: Error
           type: string
           description: Unique error code identifier.
         - key: message
-          file: $PWD/api/spec/schemas/error.yml
-          name: Error
           type: string
           description: Error message.
+parameters:
+    - in: query
+      name: next
+      description: The cursor position for pagination.
+      schema:
+        type: integer
+    - in: query
+      name: per_page
+      description: |
+        The amount of items to return in the current list (Default: 50. Min: 25, Max: 100).
+      schema:
+        type: integer
+        minimum: 25
+        maximum: 100
+        default: "50"
 

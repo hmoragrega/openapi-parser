@@ -125,6 +125,11 @@ var (
   link: Address
   enumeration: ""
   description: Physical address
+- key: embed
+  type: String
+  link: ""
+  enumeration: ""
+  description: Example of an anonymous embeddable schema.
 - key: foundation_year
   type: Number
   link: ""
@@ -213,6 +218,7 @@ var (
                   "country": "RUS"
                 }
               ],
+              "embed": "embedded",
               "foundation_year": 1983,
               "modality": "Private",
               "open": true,
@@ -261,6 +267,7 @@ var (
               "country": "RUS"
             }
           ],
+          "embed": "embedded",
           "foundation_year": 1983,
           "modality": "Private",
           "open": true
@@ -299,6 +306,7 @@ var (
                   "country": "RUS"
                 }
               ],
+              "embed": "embedded",
               "foundation_year": 1983,
               "modality": "Private",
               "open": true,
@@ -349,6 +357,7 @@ var (
               "country": "RUS"
             }
           ],
+          "embed": "embedded",
           "foundation_year": 1983,
           "modality": "Private",
           "open": true,

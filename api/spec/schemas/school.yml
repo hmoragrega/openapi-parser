@@ -75,6 +75,8 @@ properties:
     minItems: 1
     items:
       $ref: '../schemas/address.yml'
+  embed:
+    $ref: 'embed.yml' # embed non root schema.
   foundation_year:
     type: integer
     description: Year of foundation.

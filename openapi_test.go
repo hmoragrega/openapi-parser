@@ -36,7 +36,7 @@ func TestParse(t *testing.T) {
 	})
 
 	t.Run("JSON read example output", func(t *testing.T) {
-		s := spec.SchemaMap["School"]
+		s := spec.Schemas[0] // School
 		got, err := s.JSONIndent(openapiparser.ReadOp, "\t")
 		if err != nil {
 			t.Fatalf("error generatiing indented JSON: %v", err)
@@ -47,7 +47,7 @@ func TestParse(t *testing.T) {
 	})
 
 	t.Run("JSON write example output", func(t *testing.T) {
-		s := spec.SchemaMap["School"]
+		s := spec.Schemas[0] // School
 		got, err := s.JSONIndent(openapiparser.WriteOp, "\t")
 		if err != nil {
 			t.Fatalf("error generatiing indented JSON: %v", err)
@@ -99,6 +99,7 @@ var (
 			"country": "RUS"
 		}
 	],
+	"embed": "embedded",
 	"foundation_year": 1983,
 	"modality": "Private",
 	"open": true,
@@ -136,6 +137,7 @@ var (
 			"country": "RUS"
 		}
 	],
+	"embed": "embedded",
 	"foundation_year": 1983,
 	"modality": "Private",
 	"open": true
