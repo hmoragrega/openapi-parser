@@ -159,8 +159,8 @@ var (
       method: get
       status: "200"
       path: /v1/schools
-      requestbody: ""
       pathwithparams: /v1/schools
+      requestbody: ""
       response: |-
         {
           "data": [
@@ -211,6 +211,7 @@ var (
       method: post
       status: "200"
       path: /v1/schools
+      pathwithparams: /v1/schools
       requestbody: |-
         {
           "code": "ru-moscow-101",
@@ -246,7 +247,6 @@ var (
           "modality": "Private",
           "open": true
         }
-      pathwithparams: /v1/schools
       response: |-
         {
           "data": [
@@ -297,8 +297,8 @@ var (
       method: get
       status: "200"
       path: /v1/schools/{uuid}
-      requestbody: ""
       pathwithparams: /v1/schools/e017d029-a459-4cfc-bf35-dd774ddf50e7
+      requestbody: ""
       response: |-
         {
           "id": "e017d029-a459-4cfc-bf35-dd774ddf50e7",

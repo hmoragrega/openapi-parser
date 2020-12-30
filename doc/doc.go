@@ -8,7 +8,10 @@ import (
 	"github.com/hmoragrega/openapi-parser"
 )
 
-const DefaultJSONIndent = "  "
+const (
+	DefaultJSONIndent  = "  "
+	DefaultContentType = "application/json"
+)
 
 var (
 	spacesRx  = regexp.MustCompile(`\s+`)
@@ -236,15 +239,41 @@ type Tag struct {
 }
 
 type Endpoint struct {
-	Summary             string
-	Description         string
-	Method              string
-	Status              string
-	Path                string
-	RequestBody         string
-	PathWithParams      string
-	Response            string
+	// Summary of the endpoint.
+	Summary string
+	// Description of the endpoint.
+	Description string
+	// Method HTTP method.
+	Method string
+	// Status HTTP status of the first response.
+	Status string
+	// Path with param tags as defined.
+	Path string
+	// Path with param tags replaced by examples.
+	PathWithParams string
+	// RequestBody request body example, if any.
+	RequestBody string
+	// Response JSON example of the first defined response.
+	Response string
+	// ResponseDescription description of the first response.
 	ResponseDescription string
+}
+
+type endpointsConfig struct {
+	contentType string
+	indent      string
+}
+
+func WithContentType(contentType string) func(*endpointsConfig) {
+	return func(config *endpointsConfig) {
+		config.contentType = contentType
+	}
+}
+
+func WithIndent(indent string) func(*endpointsConfig) {
+	return func(config *endpointsConfig) {
+		config.indent = indent
+	}
 }
 
 // PathTags builds a lis of tags that contain the paths belonging to
@@ -255,11 +284,14 @@ type Endpoint struct {
 //
 // If an endpoint has more than one tag defined only the first one will be
 // used.
-func EndpointsByTag(spec *openapiparser.Spec) (tags []Tag, err error) {
-	return EndpointsByTagWithIndent(spec, DefaultJSONIndent)
-}
-
-func EndpointsByTagWithIndent(spec *openapiparser.Spec, indent string) (tags []Tag, err error) {
+func EndpointsByTag(spec *openapiparser.Spec, opts ...func(*endpointsConfig)) (tags []Tag, err error) {
+	c := endpointsConfig{
+		contentType: DefaultContentType,
+		indent:      DefaultJSONIndent,
+	}
+	for _, o := range opts {
+		o(&c)
+	}
 	found := make(map[string]Tag)
 	var order []string
 	for _, p := range spec.Paths {
@@ -275,15 +307,23 @@ func EndpointsByTagWithIndent(spec *openapiparser.Spec, indent string) (tags []T
 				}
 				order = append(order, name)
 			}
-			if len(ep.Responses) == 0 {
-				return nil, fmt.Errorf("no responses available for endpoint: %s %s", ep.Method, p.Key)
+
+			var res *openapiparser.Response
+			for _, r := range ep.Responses {
+				if r.Status[0] < '3' {
+					res = &r
+					break
+				}
 			}
-			res := ep.Responses[0]
-			ex, err := responseExample(res, indent)
+			if res == nil {
+				return nil, fmt.Errorf("no success response available for endpoint: %s %s", ep.Method, p.Key)
+			}
+
+			ex, err := responseExample(res, c.indent, c.contentType)
 			if err != nil {
 				return nil, fmt.Errorf("cannot group endpoints by tag: %v", err)
 			}
-			rb, err := requestBody(ep.RequestBody, indent)
+			rb, err := requestBody(ep.RequestBody, c.indent, c.contentType)
 			if err != nil {
 				return nil, fmt.Errorf("cannot group endpoints by tag: %v", err)
 			}
@@ -345,16 +385,20 @@ func replacePathParams(path string, ep openapiparser.Endpoint) string {
 	return path
 }
 
-func responseExample(res openapiparser.Response, indent string) (string, error) {
-	for _, m := range res.ContentTypes {
-		return m.Schema.JSONIndent(openapiparser.ReadOp, indent)
+func responseExample(res *openapiparser.Response, indent string, contentType string) (string, error) {
+	for ct, m := range res.ContentTypes {
+		if ct == contentType {
+			return m.Schema.JSONIndent(openapiparser.ReadOp, indent)
+		}
 	}
 	return "", fmt.Errorf("no content type defined for response: %s", res.Description)
 }
 
-func requestBody(rb openapiparser.RequestBody, indent string) (string, error) {
-	for _, m := range rb.Content {
-		return m.Schema.JSONIndent(openapiparser.WriteOp, indent)
+func requestBody(rb openapiparser.RequestBody, indent string, contentType string) (string, error) {
+	for ct, m := range rb.Content {
+		if ct == contentType {
+			return m.Schema.JSONIndent(openapiparser.WriteOp, indent)
+		}
 	}
 	return "", nil
 }
