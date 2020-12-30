@@ -274,7 +274,7 @@ paths:
                                       name: School
                                       type: boolean
                                       description: |
-                                        Indicates whether the schools is accepting new schoolars.
+                                        Indicates whether the schools is accepting new students.
                                       example: |
                                         true
                                     - key: createdAt
@@ -707,7 +707,7 @@ paths:
                               name: School
                               type: boolean
                               description: |
-                                Indicates whether the schools is accepting new schoolars.
+                                Indicates whether the schools is accepting new students.
                               example: |
                                 true
                             - key: createdAt
@@ -963,7 +963,7 @@ paths:
                                       name: School
                                       type: boolean
                                       description: |
-                                        Indicates whether the schools is accepting new schoolars.
+                                        Indicates whether the schools is accepting new students.
                                       example: |
                                         true
                                     - key: createdAt
@@ -1470,7 +1470,7 @@ paths:
                               name: School
                               type: boolean
                               description: |
-                                Indicates whether the schools is accepting new schoolars.
+                                Indicates whether the schools is accepting new students.
                               example: |
                                 true
                             - key: createdAt
@@ -1891,7 +1891,7 @@ schemas:
           name: School
           type: boolean
           description: |
-            Indicates whether the schools is accepting new schoolars.
+            Indicates whether the schools is accepting new students.
           example: |
             true
         - key: createdAt

@@ -90,7 +90,7 @@ properties:
   open:
     type: boolean
     description: |
-      Indicates whether the schools is accepting new schoolars.
+      Indicates whether the schools is accepting new students.
     example: true
   createdAt:
     description: |

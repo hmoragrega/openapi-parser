@@ -58,14 +58,17 @@ var (
 	wantResources = []byte(`- key: id
   type: String
   link: ""
+  enumeration: ""
   description: Unique ID of the office (UUID v4).
 - key: code
   type: String
   link: ""
+  enumeration: ""
   description: Unique code of the school (URL safe).
 - key: name
   type: String
   link: ""
+  enumeration: ""
   description: |-
     Name of the school
     Constraints:
@@ -75,62 +78,77 @@ var (
 - key: contacts
   type: Array
   link: ""
+  enumeration: ""
   description: Contact persons list.
 - key: contacts.#
   type: Object
   link: ""
+  enumeration: ""
   description: Person contact information.
 - key: contacts.#.email
   type: String
   link: ""
+  enumeration: ""
   description: Contact email.
 - key: contacts.#.position
   type: String
   link: ""
+  enumeration: ""
   description: Contact person's position.
 - key: contacts.#.name
   type: String
   link: ""
+  enumeration: ""
   description: Contact person's name.
 - key: contacts.#.priority
   type: String
   link: ""
+  enumeration: School Contacts Priority
   description: ""
 - key: contacts.#.phone
   type: Array
   link: ""
+  enumeration: ""
   description: Phone numbers.
 - key: main_office
   type: Object
   link: Address
+  enumeration: ""
   description: Physical address
 - key: campus
   type: Array
   link: ""
+  enumeration: ""
   description: Campus locations.
 - key: campus.#
   type: Object
   link: Address
+  enumeration: ""
   description: Physical address
 - key: foundation_year
   type: Number
   link: ""
+  enumeration: ""
   description: Year of foundation.
 - key: modality
   type: String
   link: ""
+  enumeration: School Modality
   description: The school education mode.
 - key: open
   type: Boolean
   link: ""
-  description: Indicates whether the schools is accepting new schoolars.
+  enumeration: ""
+  description: Indicates whether the schools is accepting new students.
 - key: createdAt
   type: String
   link: ""
+  enumeration: ""
   description: The date where the record was created.
 - key: updatedAt
   type: String
   link: ""
+  enumeration: ""
   description: The last time the record was updated.
 `)
 	wantEnumerations = []byte(`- title: School Contacts Priority

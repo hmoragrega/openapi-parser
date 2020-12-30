@@ -37,14 +37,13 @@ type ResourceField struct {
 	//  - foo.bar
 	//  - foo.#.bar
 	Key string
-
 	// Type JSON type of the field.
 	Type string
-
 	// Link if not empty holds the name of a named resource
 	// that was hold the information for this field.
 	Link string
-
+	// Enumeration holds the title of the enumeration.
+	Enumeration string
 	// Description the resource description.
 	Description string
 }
@@ -101,6 +100,7 @@ func buildResourceFields(x *openapiparser.Schema, name string, keys []string) (f
 		child []ResourceField
 		link  string
 		xType string
+		enum  string
 	)
 	if key == "" {
 		// is an array, use a hash to separate
@@ -137,6 +137,15 @@ func buildResourceFields(x *openapiparser.Schema, name string, keys []string) (f
 	default:
 		return nil, fmt.Errorf("cannot determine JSON type %q", x.Type)
 	}
+	if len(x.Enum) > 0 || len(x.EnumX.Options()) > 0 {
+		enumKeys := []string{name}
+		for _, k := range keys {
+			if k != "#" {
+				enumKeys = append(enumKeys, k)
+			}
+		}
+		enum = enumTitle(append(enumKeys, key))
+	}
 	if len(keys) > 0 {
 		key = strings.Join(keys, ".") + "." + key
 	}
@@ -144,6 +153,7 @@ func buildResourceFields(x *openapiparser.Schema, name string, keys []string) (f
 		Key:         key,
 		Type:        xType,
 		Link:        link,
+		Enumeration: enum,
 		Description: strings.TrimRight(desc, "\n "),
 	})
 
@@ -194,7 +204,7 @@ func schemaEnums(x *openapiparser.Schema, keys []string) (enums []Enum) {
 
 func enumXToDocEnum(x openapiparser.EnumX, keys []string) Enum {
 	e := Enum{
-		Title:    toTitle(strings.Join(keys, " ")),
+		Title:    enumTitle(keys),
 		Resource: keys[0],
 	}
 	for _, o := range x.Options() {
@@ -208,7 +218,7 @@ func enumXToDocEnum(x openapiparser.EnumX, keys []string) Enum {
 
 func enumToDocEnum(opts []string, keys []string) Enum {
 	e := Enum{
-		Title:    toTitle(strings.Join(keys, " ")),
+		Title:    enumTitle(keys),
 		Resource: keys[0],
 	}
 	for _, o := range opts {
@@ -405,4 +415,8 @@ func requestBody(rb openapiparser.RequestBody, indent string, contentType string
 
 func cleanExample(s string) string {
 	return strings.TrimSpace(strings.Trim(s, `"`))
+}
+
+func enumTitle(keys []string) string {
+	return toTitle(strings.Join(keys, " "))
 }
