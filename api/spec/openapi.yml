@@ -8,6 +8,9 @@ info:
     name:  Hilari Moragrega
     url:   https://github.com/hmoragrega
     email: hilari@hilarimoragrega.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 
 servers:
@@ -52,3 +55,26 @@ components:
         minimum: 25
         maximum: 100
         default: 50
+
+#
+#  responses:
+#    BadRequest:
+#      description: |
+#        Bad request - The request cannot be processed
+#      content:
+#        application/json:
+#          schema:
+#            $ref: "#/components/schemas/Error"
+#          example:
+#            code: "400"
+#            message: "Bad request."
+#    Unauthorized:
+#      description: |
+#        Unauthorized - Invalid authorization credentials.
+#      content:
+#        application/json:
+#          schema:
+#            $ref: "schemas/error.yml"
+#          example:
+#            code: "401"
+#            message: "Unauthorized."

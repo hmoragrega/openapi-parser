@@ -4,26 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"path"
-	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 )
 
 func Parse(file string) (spec *Spec, err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			triggeredAt := identifyPanic()
-			if rErr, ok := r.(error); ok {
-				err = fmt.Errorf("%w (%s)", rErr, triggeredAt)
-				return
-			}
-			err = fmt.Errorf("unexpected error parsing file: %v (%s)", r, triggeredAt)
-		}
-	}()
-
-	return newParser(file).parse(), nil
+	return newParser(file).parse()
 }
 
 type Spec struct {
@@ -68,15 +54,23 @@ type Contact struct {
 }
 
 type Info struct {
-	Title       string  `yaml:"title,omitempty"`
-	Description string  `yaml:"description,omitempty"`
-	Contact     Contact `yaml:"contact"`
-	APIVersion  string  `yaml:"version,omitempty"`
+	Title          string  `yaml:"title,omitempty"`
+	Description    string  `yaml:"description,omitempty"`
+	TermsOfService string  `yaml:"termsOfService,omitempty"`
+	Contact        Contact `yaml:"contact"`
+	License        License `yaml:"license,omitempty"`
+	Version        string  `yaml:"version,omitempty"`
+}
+
+type License struct {
+	Name string `yaml:"name,omitempty"`
+	URL  string `yaml:"url,omitempty"`
 }
 
 type Server struct {
 	URL         string `yaml:"url,omitempty"`
 	Description string `yaml:"description,omitempty"`
+	// variables TODO
 }
 
 type EnumOptionX struct {
@@ -257,39 +251,7 @@ func jsonSchema(op SchemaOp, s *Schema, b *strings.Builder, withKey bool) error 
 		}
 		b.WriteString("true")
 	default:
-		panic("unexpected type building schema JSON " + s.Type)
+		return fmt.Errorf("unexpected type building schema JSON %s", s.Type)
 	}
 	return nil
-}
-
-func joinPath(currentFile, ref string) string {
-	return path.Join(filepath.Dir(currentFile), ref)
-}
-
-func identifyPanic() string {
-	var name, file string
-	var line int
-	var pc [16]uintptr
-
-	n := runtime.Callers(3, pc[:])
-	for _, pc := range pc[:n] {
-		fn := runtime.FuncForPC(pc)
-		if fn == nil {
-			continue
-		}
-		file, line = fn.FileLine(pc)
-		name = fn.Name()
-		if !strings.HasPrefix(name, "runtime.") {
-			break
-		}
-	}
-
-	switch {
-	case name != "":
-		return fmt.Sprintf("%v:%v", name, line)
-	case file != "":
-		return fmt.Sprintf("%v:%v", file, line)
-	}
-
-	return fmt.Sprintf("pc:%x", pc)
 }
