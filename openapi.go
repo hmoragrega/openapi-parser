@@ -292,16 +292,16 @@ func (p *parser) addSchema(key string, x Schema) {
 	}
 }
 
-func (p *parser) schemaByFile(file string) Schema {
+func (p *parser) schemaByFile(currentFile, ref string) Schema {
 	p.schemasMx.RLock()
-	key, ok := p.schemaNames[file]
+	key, ok := p.schemaNames[joinPath(currentFile, ref)]
 	p.schemasMx.RUnlock()
 	if ok {
 		return <-p.promiseSchemaByKey(key)
 	}
 
 	// is an anonymous schema, go solve it
-	return p.parseSchemaContent(file, fileNode(file))
+	return p.parseSchemaRef(currentFile, ref)
 }
 
 func (p *parser) promiseSchemaByKey(key string) <-chan Schema {
@@ -425,7 +425,7 @@ func (p *parser) capturePaths(spec *Spec) captureFunc {
 			next := assertKind(v.node, yaml.MappingNode)
 			var ref reference
 			assertNodeDecode(next, &ref)
-			assertRef(key, &ref)
+			assertRefNotEmpty(key, &ref)
 
 			pp := p.parsePathRef(p.specFile, ref.Ref)
 			pp.Key = key
@@ -450,7 +450,7 @@ func (p *parser) captureParameters(spec *Spec) captureFunc {
 			next := assertKind(v.node, yaml.MappingNode)
 			var param Parameter
 			assertNodeDecode(next, &param)
-			assertNotRef(&param.Schema)
+			assertNotRefRecursively(&param.Schema)
 
 			p.addParameter(v.key, param)
 			spec.Parameters = append(spec.Parameters, param)
@@ -487,7 +487,7 @@ func (p *parser) captureSchemas(spec *Spec) captureFunc {
 			var ref reference
 			assertKind(v.node, yaml.MappingNode)
 			assertNodeDecode(v.node, &ref)
-			assertRef(key, &ref)
+			assertRefNotEmpty(key, &ref)
 			file := joinPath(p.specFile, ref.Ref)
 			p.schemaNames[file] = v.key
 			defs[i] = schemaDef{
@@ -514,24 +514,24 @@ func (p *parser) captureSchemas(spec *Spec) captureFunc {
 	}
 }
 
-// assertNotRef asserts there is no reference in a schema recursively.
-func assertNotRef(schema *Schema) {
+// assertNotRefRecursively asserts there is no reference in a schema recursively.
+func assertNotRefRecursively(schema *Schema) {
 	if schema == nil {
 		return
 	}
 	if schema.isRef() {
 		panic(fmt.Errorf("unsupported schema reference: %q", schema.Ref))
 	}
-	assertNotRef(schema.Items)
+	assertNotRefRecursively(schema.Items)
 	if schema.Properties == nil {
 		return
 	}
 	for _, p := range schema.Properties {
-		assertNotRef(&p)
+		assertNotRefRecursively(&p)
 	}
 }
 
-func assertRef(key string, ref *reference) {
+func assertRefNotEmpty(key string, ref *reference) {
 	if ref == nil || ref.Ref == "" {
 		panic(fmt.Errorf("missing expected reference: %q", key))
 	}
@@ -615,26 +615,24 @@ func (p *parser) parsePathRef(currentFile string, ref string) (path Path) {
 }
 
 func (p *parser) solveSchemaRef(currentFile string, ref string) Schema {
-	dir := filepath.Dir(currentFile)
 	idx := strings.Index(ref, "#")
 	if idx == -1 {
 		// this may be a direct reference to a component schema, we need to wait
 		// until all of them are solved.
-		return p.schemaByFile(filepath.Join(dir, ref))
+		return p.schemaByFile(currentFile, ref)
 	}
 
 	file := currentFile
 	if idx > 0 {
 		// the ref contains both a file path and the hashed reference, separate them
-		file = filepath.Join(dir, ref[:idx])
+		file = joinPath(currentFile, ref[:idx])
 		ref = ref[idx:]
 	}
 	if file != p.specFile {
 		// hashed references are only allowed if they point to the root file.
 		panic(fmt.Errorf("only local references to the root spec file are valid: %q", file))
 	}
-	idx = strings.Index(ref, "#/components/schemas/")
-	if idx != 0 {
+	if strings.Index(ref, "#/components/schemas/") != 0 {
 		panic(fmt.Errorf("only local references to root component schemas are supported, got: %q", ref))
 	}
 
@@ -769,7 +767,7 @@ func (p *parser) parseEndpointParameters(currentFile string, content []*yaml.Nod
 		if param.Schema.Type == "" {
 			panic(fmt.Errorf("no schema defined for path parameter at: %q", currentFile))
 		}
-		assertNotRef(&param.Schema)
+		assertNotRefRecursively(&param.Schema)
 		params = append(params, param)
 	}
 
