@@ -480,6 +480,7 @@ func (p *parser) captureSchemas(spec *Spec) captureFunc {
 		spec.Schemas = make([]Schema, len(pairs))
 
 		// first pass to get key and file.
+		p.schemasMx.Lock()
 		p.schemaNames = make(map[string]string)
 		for i, v := range pairs {
 			key := v.key
@@ -494,6 +495,7 @@ func (p *parser) captureSchemas(spec *Spec) captureFunc {
 				file: file,
 			}
 		}
+		p.schemasMx.Unlock()
 		// parse concurrently.
 		for i, v := range pairs {
 			wg.Add(1)
