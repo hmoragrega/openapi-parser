@@ -405,7 +405,7 @@ func responseExample(res *openapiparser.Response, indent string, contentType str
 }
 
 func requestBody(rb openapiparser.RequestBody, indent string, contentType string) (string, error) {
-	for ct, m := range rb.Content {
+	for ct, m := range rb.ContentTypes {
 		if ct == contentType {
 			return m.Schema.JSONIndent(openapiparser.WriteOp, indent)
 		}
