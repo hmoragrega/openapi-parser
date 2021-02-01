@@ -366,5 +366,19 @@ var (
         }
       responsedescription: |
         **School** resource.
+    - summary: Notify Schools
+      description: |
+        Notify all schools.
+      method: post
+      status: "202"
+      path: /v1/schools/notify
+      pathwithparams: /v1/schools/notify
+      requestbody: |-
+        {
+          "message": "string"
+        }
+      response: ""
+      responsedescription: |
+        Schools have been notified.
 `)
 )

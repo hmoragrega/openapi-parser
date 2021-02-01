@@ -1369,6 +1369,219 @@ paths:
                     example: |
                         code: "503"
                         message: "Service Unavailable."
+    - key: /v1/schools/notify
+      $ref: resources/schools-notify.yml
+      endpoints:
+        - method: post
+          summary: Notify Schools
+          description: |
+            Notify all schools.
+          tags:
+            - Schools
+          operationId: Notify-School
+          requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        name: SchoolNotification
+                        $ref: schemas/school-notification.yml
+                        type: object
+                        description: Notification for School
+                        required:
+                            - message
+                        properties:
+                            - key: message
+                              type: string
+                              description: The message to send to school's contact people.
+          responses:
+            - status: "202"
+              description: |
+                Schools have been notified.
+            - $ref: ../responses/errors/400.yml
+              status: "400"
+              description: |
+                Bad request - The request cannot be processed
+              content:
+                application/json:
+                    schema:
+                        name: Error
+                        $ref: schemas/error.yml
+                        type: object
+                        required:
+                            - code
+                            - message
+                        properties:
+                            - key: code
+                              type: string
+                              description: Unique error code identifier.
+                            - key: message
+                              type: string
+                              description: Error message.
+                    example: |
+                        code: "400"
+                        message: "Bad request."
+            - $ref: ../responses/errors/401.yml
+              status: "401"
+              description: |
+                Unauthorized - Invalid authorization credentials.
+              content:
+                application/json:
+                    schema:
+                        name: Error
+                        $ref: schemas/error.yml
+                        type: object
+                        required:
+                            - code
+                            - message
+                        properties:
+                            - key: code
+                              type: string
+                              description: Unique error code identifier.
+                            - key: message
+                              type: string
+                              description: Error message.
+                    example: |
+                        code: "401"
+                        message: "Unauthorized."
+            - $ref: ../responses/errors/403.yml
+              status: "403"
+              description: |
+                Forbidden - The caller does not have access to this resource.
+              content:
+                application/json:
+                    schema:
+                        name: Error
+                        $ref: schemas/error.yml
+                        type: object
+                        required:
+                            - code
+                            - message
+                        properties:
+                            - key: code
+                              type: string
+                              description: Unique error code identifier.
+                            - key: message
+                              type: string
+                              description: Error message.
+                    example: |
+                        code: "403"
+                        message: "Forbidden."
+            - $ref: ../responses/errors/404.yml
+              status: "404"
+              description: |
+                Not Found - The resource does not exists.
+              content:
+                application/json:
+                    schema:
+                        name: Error
+                        $ref: schemas/error.yml
+                        type: object
+                        required:
+                            - code
+                            - message
+                        properties:
+                            - key: code
+                              type: string
+                              description: Unique error code identifier.
+                            - key: message
+                              type: string
+                              description: Error message.
+                    example: |
+                        code: "404"
+                        message: "Not found."
+            - $ref: ../responses/errors/405.yml
+              status: "405"
+              description: |
+                Method Not Allowed - The method is not allowed for this resource.
+              content:
+                application/json:
+                    schema:
+                        name: Error
+                        $ref: schemas/error.yml
+                        type: object
+                        required:
+                            - code
+                            - message
+                        properties:
+                            - key: code
+                              type: string
+                              description: Unique error code identifier.
+                            - key: message
+                              type: string
+                              description: Error message.
+                    example: |
+                        code: "405"
+                        message: "Method Not Allowed."
+            - $ref: ../responses/errors/422.yml
+              status: "422"
+              description: |
+                Unprocessable Entity - The payload syntax is valid but there is a logic error.
+              content:
+                application/json:
+                    schema:
+                        name: Error
+                        $ref: schemas/error.yml
+                        type: object
+                        required:
+                            - code
+                            - message
+                        properties:
+                            - key: code
+                              type: string
+                              description: Unique error code identifier.
+                            - key: message
+                              type: string
+                              description: Error message.
+                    example: |
+                        code: "422"
+                        message: "Unprocessable Entity."
+            - $ref: ../responses/errors/500.yml
+              status: "500"
+              description: |
+                Internal Server Error - There has been an unexpected error processing the request.
+              content:
+                application/json:
+                    schema:
+                        name: Error
+                        $ref: schemas/error.yml
+                        type: object
+                        required:
+                            - code
+                            - message
+                        properties:
+                            - key: code
+                              type: string
+                              description: Unique error code identifier.
+                            - key: message
+                              type: string
+                              description: Error message.
+                    example: |
+                        code: "500"
+                        message: "Internal server error."
+            - $ref: ../responses/errors/503.yml
+              status: "503"
+              description: |
+                Service Unavailable - The service is unavailable.
+              content:
+                application/json:
+                    schema:
+                        name: Error
+                        $ref: schemas/error.yml
+                        type: object
+                        required:
+                            - code
+                            - message
+                        properties:
+                            - key: code
+                              type: string
+                              description: Unique error code identifier.
+                            - key: message
+                              type: string
+                              description: Error message.
+                    example: |
+                        code: "503"
+                        message: "Service Unavailable."
 schemas:
     - name: School
       $ref: schemas/school.yml
@@ -1571,6 +1784,16 @@ schemas:
           Nullable: true
           format: date-time
           readOnly: true
+    - name: SchoolNotification
+      $ref: schemas/school-notification.yml
+      type: object
+      description: Notification for School
+      required:
+        - message
+      properties:
+        - key: message
+          type: string
+          description: The message to send to school's contact people.
     - name: Address
       $ref: schemas/address.yml
       type: object
@@ -1636,4 +1859,3 @@ parameters:
         minimum: 25
         maximum: 100
         default: "50"
-

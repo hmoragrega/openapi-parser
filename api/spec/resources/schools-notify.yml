@@ -1,0 +1,34 @@
+# PATH: /v1/schools/notify
+post:
+  summary: Notify Schools
+  description: |
+    Notify all schools.
+  tags:
+    - Schools
+  operationId: Notify-School
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/school-notification.yml'
+  responses:
+    '202':
+      description: |
+        Schools have been notified.
+    '400':
+      $ref: '../responses/errors/400.yml'
+    '401':
+      $ref: '../responses/errors/401.yml'
+    '403':
+      $ref: '../responses/errors/403.yml'
+    '404':
+      $ref: '../responses/errors/404.yml'
+    '405':
+      $ref: '../responses/errors/405.yml'
+    '422':
+      $ref: '../responses/errors/422.yml'
+    '500':
+      $ref: '../responses/errors/500.yml'
+    '503':
+      $ref: '../responses/errors/503.yml'

@@ -23,6 +23,8 @@ paths:
     $ref: "resources/schools.yml"
   /v1/schools/{uuid}:
     $ref: "resources/schools-{uuid}.yml"
+  /v1/schools/notify:
+    $ref: "resources/schools-notify.yml"
 
 components:
 
@@ -30,6 +32,8 @@ components:
   schemas:
     School:
       $ref: "schemas/school.yml"
+    SchoolNotification:
+      $ref: "schemas/school-notification.yml"
     Address:
       $ref: "schemas/address.yml"
     Error:

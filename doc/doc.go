@@ -401,7 +401,8 @@ func responseExample(res *openapiparser.Response, indent string, contentType str
 			return m.Schema.JSONIndent(openapiparser.ReadOp, indent)
 		}
 	}
-	return "", fmt.Errorf("no content type defined for response: %s", res.Description)
+	// allow empty responses
+	return "", nil
 }
 
 func requestBody(rb openapiparser.RequestBody, indent string, contentType string) (string, error) {
