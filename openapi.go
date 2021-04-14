@@ -36,6 +36,7 @@ type Endpoint struct {
 	Parameters  []Parameter `yaml:"parameters,omitempty"`
 	RequestBody RequestBody `yaml:"requestBody,omitempty"`
 	Responses   []Response  `yaml:"responses,omitempty"`
+	Callbacks   []Callback  `yaml:"callbacks,omitempty"`
 }
 
 type Parameter struct {
@@ -102,6 +103,12 @@ type MediaType struct {
 	Schema   Schema `yaml:"schema,omitempty"`
 	Example  string `yaml:"example,omitempty"`
 	Examples string `yaml:"examples,omitempty"`
+}
+
+type Callback struct {
+	Name      string     `yaml:"name"`
+	URL       string     `yaml:"url"`
+	Endpoints []Endpoint `yaml:"endpoints"`
 }
 
 type Schema struct {

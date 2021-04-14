@@ -50,6 +50,20 @@ post:
       application/json:
         schema:
           $ref: '../schemas/school.yml'
+  callbacks:
+    schoolUpdated: # Event name
+      '{$request.body#/callbackUrl}': # The callback URL,# Refers to the passed URL
+        post:
+          requestBody: # Contents of the callback message
+            required: true
+            content:
+              application/json:
+                schema:
+                  $ref: '../schemas/school.yml'
+          responses:
+            '202':
+              description: |
+                Request accepted
   responses:
     '200':
       description: |

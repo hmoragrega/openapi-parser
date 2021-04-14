@@ -573,6 +573,7 @@ func (p *parser) parsePathFileContent(currentFile string, content []*yaml.Node) 
 			"operationId": captureString(&endpoint.OperationID),
 			"requestBody": p.captureRequestBody(currentFile, &endpoint.RequestBody),
 			"parameters":  p.captureEndpointParameters(currentFile, &endpoint.Parameters),
+			"callbacks":   p.captureCallbacks(currentFile, &endpoint.Callbacks),
 		})
 		if err != nil {
 			return path, fmt.Errorf("cannot parse endpoint %q at %q: %v", v.key, currentFile, err)
@@ -687,6 +688,46 @@ func (p *parser) captureEndpointParameters(currentFile string, parameters *[]Par
 			}
 			*parameters = append(*parameters, param)
 		}
+		return nil
+	}
+}
+
+func (p *parser) captureCallbacks(currentFile string, callbacks *[]Callback) captureFunc {
+	return func(node *yaml.Node) error {
+		if !isMap(node) {
+			return fmt.Errorf("callbacks should be a map at %s:%d", currentFile, node.Line)
+		}
+		pairs, err := mapPairs(node.Content)
+		if err != nil {
+			return err
+		}
+		for _, pair := range pairs {
+			var cb Callback
+			cb.Name = pair.key
+			if !isMap(pair.node) {
+				return fmt.Errorf("callback should be a map at %s:%d", currentFile, node.Line)
+			}
+			subPairs, err := mapPairs(pair.node.Content)
+			if err != nil {
+				return err
+			}
+
+			if len(subPairs) != 1 {
+				return fmt.Errorf("callback must have only one URL expression %s:%d", currentFile, node.Line)
+			}
+
+			cb.URL = subPairs[0].key
+
+			op, err := p.parsePathFileContent(currentFile, subPairs[0].node.Content)
+			if err != nil {
+				return err
+			}
+
+			cb.Endpoints = op.Endpoints
+
+			*callbacks = append(*callbacks, cb)
+		}
+
 		return nil
 	}
 }
