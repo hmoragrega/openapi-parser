@@ -1005,6 +1005,221 @@ paths:
                     example: |
                         code: "503"
                         message: "Service Unavailable."
+          callbacks:
+            - name: schoolUpdated
+              url: '{$request.body#/callbackUrl}'
+              endpoints:
+                - method: post
+                  requestBody:
+                    required: true
+                    content:
+                        application/json:
+                            schema:
+                                name: School
+                                $ref: schemas/school.yml
+                                type: object
+                                description: Information about a school.
+                                required:
+                                    - id
+                                    - code
+                                    - name
+                                    - contact
+                                    - address
+                                    - modality
+                                properties:
+                                    - key: id
+                                      type: string
+                                      description: Unique ID of the office (UUID v4).
+                                      format: uuid
+                                      pattern: ^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$
+                                      readOnly: true
+                                    - key: code
+                                      type: string
+                                      description: |
+                                        Unique code of the school (URL safe).
+                                      pattern: ^[a-zA-Z]([a-zA-Z0-9]|-(?!-)|\.(?!\.)){1,48}[a-zA-Z0-9]$
+                                      minimum: 3
+                                      maximum: 50
+                                      example: |
+                                        ru-moscow-101
+                                    - key: name
+                                      type: string
+                                      description: |
+                                        Name of the school
+                                        Constraints:
+                                          - Minimum length: 3.
+                                          - Maximum length: 100.
+                                          - Accepts alphanumeric characters, dashes, dots and spaces.
+                                      pattern: ^[a-zA-Z][\w\-\.\ ]{1,98}[a-zA-Z0-9]$
+                                      example: |
+                                        Moscow's International Business School - "Center"
+                                    - key: contacts
+                                      type: array
+                                      description: Contact persons list.
+                                      minItems: 1
+                                      items:
+                                        type: object
+                                        description: Person contact information.
+                                        required:
+                                            - email
+                                        properties:
+                                            - key: email
+                                              type: string
+                                              description: Contact email.
+                                              format: email
+                                            - key: position
+                                              type: string
+                                              description: Contact person's position.
+                                              example: |
+                                                Main office secretary.
+                                            - key: name
+                                              type: string
+                                              description: Contact person's name.
+                                              example: |
+                                                John doe
+                                            - key: priority
+                                              type: string
+                                              enum:
+                                                - Primary
+                                                - Secondary
+                                            - key: phone
+                                              type: array
+                                              description: Phone numbers.
+                                              minItems: 1
+                                              maxItems: 5
+                                              items:
+                                                type: string
+                                                example: |
+                                                    (555)-1234566789
+                                    - key: main_office
+                                      name: Address
+                                      $ref: schemas/address.yml
+                                      type: object
+                                      description: Physical address
+                                      required:
+                                        - street
+                                        - city
+                                        - country
+                                      properties:
+                                        - key: street
+                                          type: string
+                                          description: Name of the street.
+                                          example: |
+                                            Krylatskaya Ulitsa
+                                        - key: number
+                                          type: integer
+                                          description: Street number.
+                                          example: |
+                                            22
+                                        - key: area-code
+                                          type: string
+                                          description: Code of the area.
+                                          example: |
+                                            FRS12-188
+                                        - key: city
+                                          type: string
+                                          description: Name of the city.
+                                          example: |
+                                            Moscow
+                                        - key: country
+                                          type: string
+                                          description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
+                                          pattern: ^[A-Z]{3}$
+                                          minimum: 3
+                                          maximum: 3
+                                          example: |
+                                            RUS
+                                    - key: campus
+                                      type: array
+                                      description: Campus locations.
+                                      minItems: 1
+                                      items:
+                                        name: Address
+                                        $ref: schemas/address.yml
+                                        type: object
+                                        description: Physical address
+                                        required:
+                                            - street
+                                            - city
+                                            - country
+                                        properties:
+                                            - key: street
+                                              type: string
+                                              description: Name of the street.
+                                              example: |
+                                                Krylatskaya Ulitsa
+                                            - key: number
+                                              type: integer
+                                              description: Street number.
+                                              example: |
+                                                22
+                                            - key: area-code
+                                              type: string
+                                              description: Code of the area.
+                                              example: |
+                                                FRS12-188
+                                            - key: city
+                                              type: string
+                                              description: Name of the city.
+                                              example: |
+                                                Moscow
+                                            - key: country
+                                              type: string
+                                              description: Country code in [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.
+                                              pattern: ^[A-Z]{3}$
+                                              minimum: 3
+                                              maximum: 3
+                                              example: |
+                                                RUS
+                                    - key: embed
+                                      $ref: embed.yml
+                                      type: string
+                                      description: Example of an anonymous embeddable schema.
+                                      example: |
+                                        embedded
+                                    - key: foundation_year
+                                      type: integer
+                                      description: Year of foundation.
+                                      example: |
+                                        1983
+                                    - key: modality
+                                      type: string
+                                      description: The school education mode.
+                                      enum:
+                                        - Private
+                                        - Public
+                                        - Mixed
+                                      x-enum:
+                                        options:
+                                            - title: Private
+                                              description: private school.
+                                            - title: Public
+                                              description: public school.
+                                            - title: Mixed
+                                              description: public and private.
+                                    - key: open
+                                      type: boolean
+                                      description: |
+                                        Indicates whether the schools is accepting new students.
+                                      example: |
+                                        true
+                                    - key: createdAt
+                                      type: string
+                                      description: |
+                                        The date where the record was created.
+                                      format: date-time
+                                      readOnly: true
+                                    - key: updatedAt
+                                      type: string
+                                      description: |
+                                        The last time the record was updated.
+                                      Nullable: true
+                                      format: date-time
+                                      readOnly: true
+                  responses:
+                    - status: "202"
+                      description: |
+                        Request accepted
     - key: /v1/schools/{uuid}
       $ref: resources/schools-{uuid}.yml
       endpoints:
