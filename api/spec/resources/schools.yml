@@ -13,6 +13,16 @@ get:
     '200':
       description: |
         List of **School** resources.
+      headers:
+        x-current:
+          description: The canonical link to the current page of responses.
+          example: "https://example.com?page=3"
+          schema:
+            type: string
+        x-next:
+          $ref: '../schemas/headers/next.yml'
+        x-previous:
+          $ref: '../schemas/headers/previous.yml'
       content:
         application/json:
           schema:

@@ -3,6 +3,7 @@ package openapiparser_test
 import (
 	"bytes"
 	"io/ioutil"
+	"os"
 	"testing"
 
 	openapiparser "github.com/hmoragrega/openapi-parser"
@@ -29,6 +30,17 @@ func TestParse(t *testing.T) {
 
 		if bytes.Compare(golden, got) != 0 {
 			t.Errorf("generated file is different. Got:\n'%s'\n Want:\n'%s'\n", got, golden)
+
+			f, err := os.Create("test/got.yml")
+			if err != nil {
+				t.Fatalf("cannot create generated file: %v", err)
+			}
+			if _, err = f.Write(got); err != nil {
+				t.Fatalf("cannot write generated file: %v", err)
+			}
+			if err = f.Close(); err != nil {
+				t.Fatalf("cannot close generated file: %v", err)
+			}
 		}
 	})
 

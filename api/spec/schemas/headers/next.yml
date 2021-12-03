@@ -1,0 +1,4 @@
+description: A link to the next page of responses
+example: "https://example.com?page=4"
+schema:
+  type: string
