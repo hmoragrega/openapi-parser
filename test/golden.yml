@@ -255,6 +255,22 @@ paths:
                                       Nullable: true
                                       format: date-time
                                       readOnly: true
+              headers:
+                x-current:
+                    schema:
+                        type: string
+                    description: The canonical link to the current page of responses.
+                    example: https://example.com?page=3
+                x-next:
+                    schema:
+                        type: string
+                    description: A link to the next page of responses
+                    example: https://example.com?page=4
+                x-previous:
+                    schema:
+                        type: string
+                    description: A link to the previous page of responses
+                    example: https://example.com?page=2
             - $ref: ../responses/errors/401.yml
               status: "401"
               description: |

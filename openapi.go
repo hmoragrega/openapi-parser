@@ -88,6 +88,7 @@ type Response struct {
 	Status       string       `yaml:"status,omitempty"`
 	Description  string       `yaml:"description,omitempty"`
 	ContentTypes ContentTypes `yaml:"content,omitempty"`
+	Headers      Headers      `yaml:"headers,omitempty"`
 }
 
 type RequestBody struct {
@@ -109,6 +110,14 @@ type Callback struct {
 	Name      string     `yaml:"name"`
 	URL       string     `yaml:"url"`
 	Endpoints []Endpoint `yaml:"endpoints"`
+}
+
+type Headers map[string]Header
+
+type Header struct {
+	Schema      Schema `yaml:"schema,omitempty"`
+	Description string `yaml:"description,omitempty"`
+	Example     string `yaml:"example,omitempty"`
 }
 
 type Schema struct {

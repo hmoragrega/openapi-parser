@@ -20,6 +20,7 @@ type parser struct {
 
 	schemasParsed   map[string]*Schema
 	responsesParsed map[string]*Response
+	headersParsed   map[string]*Header
 	pathsParsed     map[string]*Path
 	parsedFilesMx   sync.RWMutex
 
@@ -46,6 +47,7 @@ func newParser(file string) *parser {
 		schemasParsed:   make(map[string]*Schema),
 		pathsParsed:     make(map[string]*Path),
 		responsesParsed: make(map[string]*Response),
+		headersParsed:   make(map[string]*Header),
 
 		// parameters holds the parameters parsed by the key in the root spec file.
 		parameters:         make(map[string]*Parameter),
@@ -597,9 +599,10 @@ func (p *parser) captureResponse(currentFile string, res *Response) captureFunc 
 			"$ref":        p.captureResponseRef(currentFile, &refRes, &isRef),
 			"description": captureString(&res.Description),
 			"content":     p.captureMediaTypes(currentFile, &res.ContentTypes),
+			"headers":     p.captureHeaders(currentFile, &res.Headers),
 		})
 		if err != nil {
-			return fmt.Errorf("cannot parse repsonse at %s: %v", currentFile, err)
+			return fmt.Errorf("cannot parse response at %s: %v", currentFile, err)
 		}
 		if isRef {
 			*res = refRes
@@ -622,6 +625,84 @@ func (p *parser) captureResponses(currentFile string, responses *[]Response) cap
 			res.Status = v.key
 			*responses = append(*responses, res)
 		}
+		return nil
+	}
+}
+
+func (p *parser) captureHeaders(currentFile string, headers *Headers) captureFunc {
+	*headers = make(Headers)
+	m := *headers
+	return func(node *yaml.Node) error {
+		pairs, err := mapPairs(node.Content)
+		if err != nil {
+			return err
+		}
+		for _, v := range pairs {
+			var header Header
+			if err := p.captureHeader(currentFile, &header)(v.node); err != nil {
+				return err
+			}
+			m[v.key] = header
+		}
+		return nil
+	}
+}
+
+func (p *parser) captureHeader(currentFile string, header *Header) captureFunc {
+	return func(node *yaml.Node) error {
+		var (
+			refHeader Header
+			isRef     bool
+		)
+		if !isMap(node) {
+			return fmt.Errorf("header definition is not a map at %s:%d", currentFile, node.Line)
+		}
+		err := capture(node.Content, captureMap{
+			"$ref":        p.captureHeaderRef(currentFile, &refHeader, &isRef),
+			"schema":      p.captureSchema(currentFile, &header.Schema),
+			"description": captureString(&header.Description),
+			"example":     captureString(&header.Example),
+		})
+		if err != nil {
+			return fmt.Errorf("cannot parse header at %s: %v", currentFile, err)
+		}
+		if isRef {
+			*header = refHeader
+		}
+		return nil
+	}
+}
+
+func (p *parser) captureHeaderRef(currentFile string, header *Header, isRef *bool) captureFunc {
+	return func(node *yaml.Node) error {
+		if !isScalar(node) {
+			return fmt.Errorf("response reference is not a string")
+		}
+		ref := node.Value
+		*isRef = true
+
+		// Check if we have parsed it already
+		headerFile := joinPath(currentFile, ref)
+		p.parsedFilesMx.RLock()
+		cache, ok := p.headersParsed[headerFile]
+		p.parsedFilesMx.RUnlock()
+		if ok {
+			*header = *cache
+			return nil
+		}
+
+		root, err := fileNode(headerFile)
+		if err != nil {
+			return err
+		}
+		err = p.captureHeader(headerFile, header)(root)
+		if err != nil {
+			return err
+		}
+
+		p.parsedFilesMx.Lock()
+		p.headersParsed[headerFile] = header
+		p.parsedFilesMx.Unlock()
 		return nil
 	}
 }
